@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Ophtha</string>
+    <string name="title_activity_patients">PatientsActivity</string>
+    <string name="oculus_dexter">OD</string>
+    <string name="oculus_sinister">OS</string>
+    <string-array name="genders">
+        <item>М</item>
+        <item>Ж</item>
+    </string-array>
+</resources>

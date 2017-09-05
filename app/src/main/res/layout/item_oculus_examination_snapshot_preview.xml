@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/oculus_snapshot_image_view"
+        android:src="@mipmap/ic_launcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        fresco:placeholderImage="@mipmap/ic_launcher"
+        fresco:viewAspectRatio="1"/>
+
+    <View
+        android:id="@+id/oculus_comment_indicator_view"
+        android:layout_margin="8dp"
+        android:layout_gravity="top|right"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:background="@color/colorAccent"/>
+
+</FrameLayout>
