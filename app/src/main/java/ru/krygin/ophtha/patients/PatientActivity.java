@@ -11,10 +11,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ru.krygin.ophtha.DateTimeUtils;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.comparation.ExaminationComparisionActivity;
 import ru.krygin.ophtha.core.async.UseCase;
@@ -41,6 +43,15 @@ public class PatientActivity extends BaseActivity {
     @BindView(R.id.fab)
     FloatingActionButton mFloatingActionButton;
 
+    @BindView(R.id.patient_name_text_view)
+    TextView mPatientNameTextView;
+
+    @BindView(R.id.patient_birthday_text_view)
+    TextView mPatientBirthdayTextView;
+
+    @BindView(R.id.patient_id_text_view)
+    TextView mPatientIdTextView;
+
     private ExaminationsPerOculusPagerAdapter mExaminationPerOculusPagerAdapter;
     private long mPatientUUID;
 
@@ -53,7 +64,7 @@ public class PatientActivity extends BaseActivity {
         mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
 
         setSupportActionBar(mToolbar);
-
+        setTitle("Карта пациента");
         mExaminationPerOculusPagerAdapter = new ExaminationsPerOculusPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mExaminationPerOculusPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -66,7 +77,9 @@ public class PatientActivity extends BaseActivity {
             @Override
             public void onSuccess(GetPatientUseCase.ResponseValue response) {
                 PatientsRepository.Patient patient = response.getPatient();
-                setTitle(patient.getLastName());
+                mPatientNameTextView.setText(String.format("%s %s %s", patient.getLastName(), patient.getFirstName(), patient.getPatronymic()));
+                mPatientBirthdayTextView.setText(DateTimeUtils.getDateString(patient.getBirthday()));
+                mPatientIdTextView.setText(patient.getPatientId());
             }
 
             @Override
