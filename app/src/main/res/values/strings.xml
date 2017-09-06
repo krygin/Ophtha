@@ -3,6 +3,7 @@
     <string name="title_activity_patients">PatientsActivity</string>
     <string name="oculus_dexter">OD</string>
     <string name="oculus_sinister">OS</string>
+    <string name="action_save">Сохранить</string>
     <string-array name="genders">
         <item>М</item>
         <item>Ж</item>

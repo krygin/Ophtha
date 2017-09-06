@@ -12,6 +12,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ru.krygin.ophtha.DateTimeUtils;
 import ru.krygin.ophtha.R;
 
 /**
@@ -37,7 +38,9 @@ public class PatientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         PatientsRepository.Patient patient = mPatients.get(position);
-        viewHolder.patientsNameTextView.setText(String.format("%s %s", patient.getLastName(), patient.getFirstName()));
+        viewHolder.patientNameTextView.setText(String.format("%s %s", patient.getLastName(), patient.getFirstName()));
+        viewHolder.patientBirthdayTextView.setText(DateTimeUtils.getDateString(patient.getBirthday()));
+
     }
 
     @Override
@@ -59,7 +62,10 @@ public class PatientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     protected class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.patient_name_text_view)
-        protected TextView patientsNameTextView;
+        protected TextView patientNameTextView;
+
+        @BindView(R.id.patient_birthday_text_view)
+        protected TextView patientBirthdayTextView;
 
         @OnClick(R.id.item_view)
         protected void OnClick(View view) {

@@ -3,14 +3,10 @@ package ru.krygin.ophtha.patients;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
-import com.google.common.collect.Lists;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,7 +17,8 @@ import ru.krygin.ophtha.core.async.UseCase;
 
 public class PatientsActivity extends BaseActivity {
 
-    PatientsAdapter mPatientsAdapter;
+    private PatientsAdapter mPatientsAdapter;
+
     @BindView(R.id.recycler_view)
     protected RecyclerView mRecyclerView;
 
@@ -38,10 +35,11 @@ public class PatientsActivity extends BaseActivity {
 
         mPatientsAdapter = new PatientsAdapter();
         mPatientsAdapter.setOnPatientClickListener(patient -> {
-            Intent intent = new Intent(PatientsActivity.this, PatientActivity.class);
+            Intent intent = PatientActivity.newIntent(PatientsActivity.this, patient.getUUID());
             startActivity(intent);
         });
 
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mRecyclerView.setAdapter(mPatientsAdapter);
     }
 

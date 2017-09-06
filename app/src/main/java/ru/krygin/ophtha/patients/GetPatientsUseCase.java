@@ -26,8 +26,6 @@ public class GetPatientsUseCase extends UseCase<GetPatientsUseCase.RequestValues
     @Override
     protected void executeUseCase(GetPatientsUseCase.RequestValues requestValues) {
         List<PatientsRepository.Patient> patients = mPatientsRepository.getPatients();
-
-        patientItems.addAll(patients);
         ResponseValue responseValue = new ResponseValue(patients);
         getUseCaseCallback().onSuccess(responseValue);
     }
@@ -48,12 +46,5 @@ public class GetPatientsUseCase extends UseCase<GetPatientsUseCase.RequestValues
             return mPatients;
         }
     }
-
-
-    public static List<PatientsRepository.Patient> patientItems = new ArrayList<PatientsRepository.Patient>() {{
-        add(new PatientsRepository.Patient(1, "Путин", "Владимир", "Владимирович", PatientsRepository.Patient.Gender.M, "123123123"));
-        add(new PatientsRepository.Patient(2, "Медведев", "Дмитрий", "Анатольевич", PatientsRepository.Patient.Gender.M, "12323"));
-        add(new PatientsRepository.Patient(3, "Крыгин", "Иван", "Александрович", PatientsRepository.Patient.Gender.M, "123123"));
-    }};
 
 }

@@ -8,4 +8,6 @@ import com.arellomobile.mvp.MvpView;
 
 public interface PatientView extends MvpView {
     void showPatient(PatientsRepository.Patient patient);
+
+    void close();
 }

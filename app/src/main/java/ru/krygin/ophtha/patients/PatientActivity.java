@@ -1,5 +1,6 @@
 package ru.krygin.ophtha.patients;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.comparation.ExaminationComparisionActivity;
+import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.BaseActivity;
 import ru.krygin.ophtha.examination.CreateOrUpdateExaminationActivity;
 import ru.krygin.ophtha.examination.ExaminationsPerOculusPagerAdapter;
@@ -26,6 +28,7 @@ import ru.krygin.ophtha.examination.ExaminationsPerOculusPagerAdapter;
 
 public class PatientActivity extends BaseActivity {
 
+    private static final String EXTRA_PATIENT_UUID = "EXTRA_PATIENT_UUID";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -39,12 +42,16 @@ public class PatientActivity extends BaseActivity {
     FloatingActionButton mFloatingActionButton;
 
     private ExaminationsPerOculusPagerAdapter mExaminationPerOculusPagerAdapter;
+    private long mPatientUUID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient);
         ButterKnife.bind(this);
+
+        mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
+
         setSupportActionBar(mToolbar);
 
         mExaminationPerOculusPagerAdapter = new ExaminationsPerOculusPagerAdapter(getResources(), getSupportFragmentManager());
@@ -52,6 +59,22 @@ public class PatientActivity extends BaseActivity {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUseCaseHandler().execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(mPatientUUID), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
+            @Override
+            public void onSuccess(GetPatientUseCase.ResponseValue response) {
+                PatientsRepository.Patient patient = response.getPatient();
+                setTitle(patient.getLastName());
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,5 +98,11 @@ public class PatientActivity extends BaseActivity {
     void onClick(View view) {
         Intent intent = new Intent(this, CreateOrUpdateExaminationActivity.class);
         startActivity(intent);
+    }
+
+    public static Intent newIntent(Context context, long patientUUID) {
+        Intent intent = new Intent(context, PatientActivity.class);
+        intent.putExtra(EXTRA_PATIENT_UUID, patientUUID);
+        return intent;
     }
 }

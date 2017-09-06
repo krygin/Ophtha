@@ -11,22 +11,24 @@ import io.realm.annotations.PrimaryKey;
 
 public class PatientObject extends RealmObject {
 
-    private long id;
+    public static final String UUID_FIELD = "UUID";
+
+    @PrimaryKey
+    private long UUID;
     private String firstName;
     private String lastName;
     private String patronymic;
     private Date dateOfBirth;
     private Boolean gender; // true - male, false - female, null - undefinded
-    @PrimaryKey
-    private String patient_id;
+    private String patientId;
 
 
-    public long getId() {
-        return id;
+    public long getUUID() {
+        return UUID;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(long UUID) {
+        this.UUID = UUID;
     }
 
     public String getFirstName() {
@@ -53,11 +55,11 @@ public class PatientObject extends RealmObject {
         this.patronymic = patronymic;
     }
 
-    public Date getDateOfBirth() {
+    public Date getBirthday() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setBirthday(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -70,10 +72,11 @@ public class PatientObject extends RealmObject {
     }
 
     public String getPatientId() {
-        return patient_id;
+        return patientId;
     }
 
-    public void setPatientId(String patient_id) {
-        this.patient_id = patient_id;
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
+
 }

@@ -3,6 +3,8 @@ package ru.krygin.ophtha.patients;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import ru.krygin.ophtha.core.Injector;
@@ -24,8 +26,8 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
     }
 
 
-    public void savePatient(int id, String lastName, String firstName, String patronymic, PatientsRepository.Patient.Gender gender, String patientId) {
-        PatientsRepository.Patient patient = new PatientsRepository.Patient(id, lastName, firstName, patronymic, gender, patientId);
+    public void savePatient(int id, String lastName, String firstName, String patronymic, PatientsRepository.Patient.Gender gender, String patientId, Date birthday) {
+        PatientsRepository.Patient patient = new PatientsRepository.Patient(id, lastName, firstName, patronymic, gender, patientId, birthday);
 
 
         SavePatientUseCase.RequestValues requestValues = new SavePatientUseCase.RequestValues(patient);
@@ -33,7 +35,7 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
         mUseCaseHandler.execute(new SavePatientUseCase(), requestValues, new UseCase.UseCaseCallback<SavePatientUseCase.ResponseValue>() {
             @Override
             public void onSuccess(SavePatientUseCase.ResponseValue response) {
-
+                getViewState().close();
             }
 
             @Override

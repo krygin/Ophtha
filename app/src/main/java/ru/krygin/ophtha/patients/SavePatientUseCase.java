@@ -20,6 +20,8 @@ public class SavePatientUseCase extends UseCase<SavePatientUseCase.RequestValues
     @Override
     protected void executeUseCase(RequestValues requestValues) {
         mPatientsRepository.createOrUpdatePatient(requestValues.getPatient());
+
+        getUseCaseCallback().onSuccess(new ResponseValue());
     }
 
     public static class RequestValues implements UseCase.RequestValues {

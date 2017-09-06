@@ -20,9 +20,9 @@ public class OphthaApplication extends Application {
         Fresco.initialize(this);
 
         Realm.init(this);
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
-        Realm.deleteRealm(realmConfiguration); // Clean slate
-        Realm.setDefaultConfiguration(realmConfiguration); // Make this Realm the default
+//        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+//        Realm.deleteRealm(realmConfiguration); // Clean slate
+//        Realm.setDefaultConfiguration(realmConfiguration); // Make this Realm the default
 
         OphthaAppComponent appComponent = DaggerOphthaAppComponent
                 .builder()
