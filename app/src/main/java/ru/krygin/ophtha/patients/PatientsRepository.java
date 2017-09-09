@@ -1,7 +1,5 @@
 package ru.krygin.ophtha.patients;
 
-import android.support.annotation.Nullable;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -9,9 +7,16 @@ import com.google.common.collect.Lists;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
+import ru.krygin.ophtha.examination.db.ExaminationObject;
+import ru.krygin.ophtha.examination.db.SnapshotObject;
+import ru.krygin.ophtha.examination.model.Examination;
+import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.patients.db.PatientObject;
+import ru.krygin.ophtha.patients.model.Patient;
 
 /**
  * Created by krygin on 20.08.17.
@@ -21,7 +26,7 @@ public class PatientsRepository {
 
     public void createOrUpdatePatient(Patient patient) {
         PatientObject patientObject = new PatientObject();
-        patientObject.setId(System.currentTimeMillis());
+        patientObject.setUUID(patient.getUUID());
         patientObject.setFirstName(patient.getFirstName());
         patientObject.setLastName(patient.getLastName());
         patientObject.setPatronymic(patient.getPatronymic());
@@ -29,7 +34,26 @@ public class PatientsRepository {
         patientObject.setPatientId(patient.getPatientId());
         patientObject.setBirthday(patient.getBirthday());
 
+        SnapshotObject snapshotObject = new SnapshotObject();
+        snapshotObject.setUUID(System.currentTimeMillis());
+        snapshotObject.setFilename("http://www.yvetrov.ru/UserFiles/Image/yv_os.jpg");
+        snapshotObject.setTimestamp(new Date(System.currentTimeMillis()));
+        snapshotObject.setComment("Новый коммент");
+        snapshotObject.setOculus(true);
+
+        ExaminationObject examinationObject = new ExaminationObject();
+        examinationObject.setUUID(System.currentTimeMillis());
+        examinationObject.setTitle("Title 1");
+        examinationObject.setComment("Коммент к исследованию");
+        examinationObject.setDiagnosis("Миопия");
+        examinationObject.setDate(new Date(System.currentTimeMillis()));
+
+        examinationObject.getSnapshots().add(snapshotObject);
+
+        patientObject.getExaminations().add(examinationObject);
+
         Realm realm = Realm.getDefaultInstance();
+
         realm.beginTransaction();
 
         realm.insertOrUpdate(patientObject);
@@ -55,124 +79,58 @@ public class PatientsRepository {
         return patient;
     }
 
-    public static class Patient {
 
-        private final long mUUID;
-        private final String mLastName;
-        private final String mFirstName;
-        private final String mPatronymic;
-        private final Gender mGender;
-        private final String mPatientId;
-        private final Date mBirthday;
-
-        public long getUUID() {
-            return mUUID;
-        }
-
-        public String getLastName() {
-            return mLastName;
-        }
-
-        public String getFirstName() {
-            return mFirstName;
-        }
-
-        public String getPatronymic() {
-            return mPatronymic;
-        }
-
-        public Gender getGender() {
-            return mGender;
-        }
-
-        public String getPatientId() {
-            return mPatientId;
-        }
-
-        public Patient(long UUID, String lastName, String firstName, String patronymic, Gender gender, String patientId, Date birthday) {
-            mUUID = UUID;
-            mLastName = lastName;
-            mFirstName = firstName;
-            mPatronymic = patronymic;
-            mGender = gender;
-            mPatientId = patientId;
-            mBirthday = birthday;
-        }
-
-        public Date getBirthday() {
-            return mBirthday;
-        }
-
-        public enum Gender {
-            UNDEFINDED("Пол", "-"),
-            M("Мужской", "М"),
-            F("Женский", "Ж");
-
-            private final String mGenderString;
-            private final String mGenderShortString;
-
-            Gender(String genderString, String genderShortString) {
-                mGenderString = genderString;
-                mGenderShortString = genderShortString;
-            }
-
-            @Override
-            public String toString() {
-                return mGenderString;
-            }
-
-            @Nullable
-            Boolean toBoolean() {
-                Boolean gender = null;
-                switch (this) {
-                    case M:
-                        gender = true;
-                        break;
-                    case F:
-                        gender = false;
-                        break;
-                    case UNDEFINDED:
-                        gender = null;
-                        break;
-                }
-                return gender;
-            }
-
-            public static Gender fromBoolean(Boolean genderBoolean) {
-                Gender gender = UNDEFINDED;
-                if (genderBoolean == Boolean.TRUE) {
-                    gender = M;
-                } else if (genderBoolean == Boolean.FALSE) {
-                    gender = F;
-                } else {
-                    gender = UNDEFINDED;
-                }
-                return gender;
-            }
-
-            public String toShortString() {
-                return mGenderShortString;
-            }
-        }
-    }
-
-
-    private static Function<PatientObject, Patient> patientTransformer = new Function<PatientObject, Patient>() {
+    public static Function<PatientObject, Patient> patientTransformer = new Function<PatientObject, Patient>() {
         @javax.annotation.Nullable
         @Override
         public Patient apply(@javax.annotation.Nullable PatientObject input) {
             if (input == null) {
                 return null;
             }
-            Patient patient = new Patient(
-                    input.getUUID(),
-                    input.getLastName(),
-                    input.getFirstName(),
-                    input.getPatronymic(),
-                    Patient.Gender.fromBoolean(input.getGender()),
-                    input.getPatientId(),
-                    input.getBirthday());
+            Patient patient = new Patient();
+            patient.setUUID(input.getUUID());
+            patient.setLastName(input.getLastName());
+            patient.setFirstName(input.getFirstName());
+            patient.setPatronymic(input.getPatronymic());
+            patient.setGender(Patient.Gender.fromBoolean(input.getGender()));
+            patient.setPatientId(input.getPatientId());
+            patient.setBirthday(input.getBirthday());
+
+            Iterable<Examination> examinations = Iterables.transform(input.getExaminations(), examinationTransformer);
+            List<Examination> filteredExaminations = Lists.newArrayList(examinations);
+            patient.setExaminations(filteredExaminations);
             return patient;
+        }
+    };
+
+    public static Function<ExaminationObject, Examination> examinationTransformer = new Function<ExaminationObject, Examination>() {
+        @Nullable
+        @Override
+        public Examination apply(@Nullable ExaminationObject input) {
+            if (input == null) {
+                return null;
+            }
+            Examination examination = new Examination();
+            examination.setUUID(input.getUUID());
+            examination.setTitle(input.getTitle());
+            examination.setDate(input.getDate());
+
+            Iterable<Snapshot> snapshots = Iterables.transform(input.getSnapshots(), snapshotTransformer);
+            List<Snapshot> filteredSnapshots = Lists.newArrayList(snapshots);
+            examination.setSnapshots(filteredSnapshots);
+            return examination;
+        }
+    };
+
+    public static Function<SnapshotObject, Snapshot> snapshotTransformer = new Function<SnapshotObject, Snapshot>() {
+        @Nullable
+        @Override
+        public Snapshot apply(@Nullable SnapshotObject input) {
+            if (input == null) {
+                return null;
+            }
+            Snapshot snapshot = new Snapshot(input.getUUID(), input.getFilename(), input.getComment());
+            return snapshot;
         }
     };
 }

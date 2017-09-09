@@ -16,6 +16,8 @@ import butterknife.ButterKnife;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import ru.krygin.ophtha.R;
+import ru.krygin.ophtha.examination.model.Examination;
+import ru.krygin.ophtha.examination.model.Snapshot;
 
 /**
  * Created by krygin on 06.08.17.
@@ -23,17 +25,14 @@ import ru.krygin.ophtha.R;
 
 public class ExaminationSection extends StatelessSection {
 
-    private final String mTitle;
-    private final Date mDate;
-    private final List<GetExaminationsUseCase.Snapshot> mSnapshots;
+    private final Examination mExamination;
     private OnShapshotClickListener mOnSnapshotClickListener;
+    private OnExaminationClickListener mOnSectionClickListener;
 
-    public ExaminationSection(String title, Date date, List<GetExaminationsUseCase.Snapshot> snapshots) {
+    public ExaminationSection(Examination examination) {
         super(new SectionParameters.Builder(R.layout.item_oculus_examination_snapshot_preview)
                 .headerResourceId(R.layout.item_oculus_examination_info_header).build());
-        mTitle = title;
-        mDate = date;
-        mSnapshots = snapshots;
+        mExamination = examination;
     }
 
     void setOnShapshotClickListener(OnShapshotClickListener onShapshotClickListener) {
@@ -42,7 +41,7 @@ public class ExaminationSection extends StatelessSection {
 
     @Override
     public int getContentItemsTotal() {
-        return mSnapshots.size();
+        return mExamination.getSnapshots().size();
     }
 
     @Override
@@ -53,7 +52,7 @@ public class ExaminationSection extends StatelessSection {
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        GetExaminationsUseCase.Snapshot snapshot = mSnapshots.get(position);
+        Snapshot snapshot = mExamination.getSnapshots().get(position);
         itemViewHolder.imageView.setImageURI(snapshot.getSnapshotUri());
         itemViewHolder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -74,8 +73,20 @@ public class ExaminationSection extends StatelessSection {
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        headerViewHolder.oculusExaminationTitleTextView.setText(mTitle);
-        headerViewHolder.oculusExaminationDateTextView.setText(DateFormat.getDateInstance().format(mDate));
+        headerViewHolder.oculusExaminationTitleTextView.setText(mExamination.getTitle());
+        headerViewHolder.oculusExaminationDateTextView.setText(DateFormat.getDateInstance().format(mExamination.getDate()));
+        headerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnSectionClickListener != null) {
+                    mOnSectionClickListener.onExaminationClick(mExamination);
+                }
+            }
+        });
+    }
+
+    public void setOnSectionClickListener(OnExaminationClickListener onSectionClickListener) {
+        mOnSectionClickListener = onSectionClickListener;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -107,6 +118,10 @@ public class ExaminationSection extends StatelessSection {
     }
 
     public interface OnShapshotClickListener {
-        void onSnapshotClick(GetExaminationsUseCase.Snapshot snapshot);
+        void onSnapshotClick(Snapshot snapshot);
+    }
+
+    public interface OnExaminationClickListener {
+        void onExaminationClick(Examination examination);
     }
 }

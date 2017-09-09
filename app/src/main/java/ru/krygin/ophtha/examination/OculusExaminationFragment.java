@@ -26,6 +26,7 @@ import butterknife.OnClick;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.TitledFragment;
+import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
 
 /**
@@ -44,11 +45,13 @@ public abstract class OculusExaminationFragment extends TitledFragment {
     private OculusSnapshotsAdapter mOculusSnapshotsAdapter;
     private OnAddSnapshotButtonClickListener mOnAddSnapshotButtonClickListener;
     private Uri mPhotoUri;
+    private ExaminationUUIDProvider mExaminationUUIDProvider;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mOnAddSnapshotButtonClickListener = (OnAddSnapshotButtonClickListener) context;
+        mExaminationUUIDProvider = (ExaminationUUIDProvider) context;
     }
 
     @Override
@@ -76,11 +79,11 @@ public abstract class OculusExaminationFragment extends TitledFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getUseCaseHandler().execute(new GetExaminationsUseCase(), new GetExaminationsUseCase.RequestValues(0, getOculus()), new UseCase.UseCaseCallback<GetExaminationsUseCase.ResponseValue>() {
+        getUseCaseHandler().execute(new GetExaminationsUseCase(), new GetExaminationsUseCase.RequestValues(mExaminationUUIDProvider.getExaminationUUID()), new UseCase.UseCaseCallback<GetExaminationsUseCase.ResponseValue>() {
             @Override
             public void onSuccess(GetExaminationsUseCase.ResponseValue response) {
 
-                mOculusSnapshotsAdapter.setSnapshots(response.getExaminations().get(0).getSnapshots());
+                mOculusSnapshotsAdapter.setSnapshots(response.getExamination().getSnapshots());
                 mOculusSnapshotsAdapter.notifyDataSetChanged();
             }
 
@@ -95,6 +98,7 @@ public abstract class OculusExaminationFragment extends TitledFragment {
     public void onDetach() {
         super.onDetach();
         mOnAddSnapshotButtonClickListener = null;
+        mExaminationUUIDProvider = null;
     }
 
     @OnClick(R.id.add_snapshot_button)
@@ -128,18 +132,23 @@ public abstract class OculusExaminationFragment extends TitledFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 123:
-                File file = getFileUriProvider().getOculusSnapshotsFile("eee", getOculus());
-                File[] files = file.listFiles();
-                Log.e("qqqq", String.valueOf(files.length));
-                List<GetExaminationsUseCase.Snapshot> snapshotList = new ArrayList<>();
-                for (File f: files) {
-                    GetExaminationsUseCase.Snapshot snapshot = new GetExaminationsUseCase.Snapshot(FileProvider.getUriForFile(getContext(), "ru.krygin.ophtha.fileprovider", f), "qwqweqwe");
-                    snapshotList.add(snapshot);
-                }
-                GetExaminationsUseCase.snapshots.clear();
-                GetExaminationsUseCase.snapshots.addAll(snapshotList);
+//                File file = getFileUriProvider().getOculusSnapshotsFile("eee", getOculus());
+//                File[] files = file.listFiles();
+//                Log.e("qqqq", String.valueOf(files.length));
+//                List<Snapshot> snapshotList = new ArrayList<>();
+//                for (File f: files) {
+//                    Uri uri = Uri.parse()
+//                    Snapshot snapshot = new Snapshot(FileProvider.getUriForFile(getContext(), "ru.krygin.ophtha.fileprovider", f), "qwqweqwe");
+//                    snapshotList.add(snapshot);
+//                }
+//                GetExaminationsUseCase.snapshots.clear();
+//                GetExaminationsUseCase.snapshots.addAll(snapshotList);
                 break;
         }
+    }
+
+    interface ExaminationUUIDProvider {
+        long getExaminationUUID();
     }
 
 }

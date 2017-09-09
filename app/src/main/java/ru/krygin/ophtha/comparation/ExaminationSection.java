@@ -17,6 +17,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.examination.GetExaminationsUseCase;
+import ru.krygin.ophtha.examination.model.Snapshot;
 
 /**
  * Created by krygin on 06.08.17.
@@ -26,10 +27,10 @@ public class ExaminationSection extends StatelessSection {
 
     private final String mTitle;
     private final Date mDate;
-    private final List<GetExaminationsUseCase.Snapshot> mSnapshots;
+    private final List<Snapshot> mSnapshots;
     private OnShapshotClickListener mOnSnapshotClickListener;
 
-    public ExaminationSection(String title, Date date, List<GetExaminationsUseCase.Snapshot> snapshots) {
+    public ExaminationSection(String title, Date date, List<Snapshot> snapshots) {
         super(new SectionParameters.Builder(R.layout.item_oculus_examination_snapshot_preview)
                 .headerResourceId(R.layout.item_oculus_examination_info_header).build());
         mTitle = title;
@@ -49,7 +50,7 @@ public class ExaminationSection extends StatelessSection {
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        GetExaminationsUseCase.Snapshot snapshot = mSnapshots.get(position);
+        Snapshot snapshot = mSnapshots.get(position);
         itemViewHolder.imageView.setImageURI(snapshot.getSnapshotUri());
         itemViewHolder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +108,6 @@ public class ExaminationSection extends StatelessSection {
     }
 
     public interface OnShapshotClickListener {
-        void onSnapshotClick(GetExaminationsUseCase.Snapshot snapshot);
+        void onSnapshotClick(Snapshot snapshot);
     }
 }

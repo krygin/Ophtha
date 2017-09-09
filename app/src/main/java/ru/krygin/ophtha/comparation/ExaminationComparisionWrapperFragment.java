@@ -12,6 +12,7 @@ import butterknife.ButterKnife;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.ui.BaseFragment;
 import ru.krygin.ophtha.examination.GetExaminationsUseCase;
+import ru.krygin.ophtha.examination.model.Snapshot;
 
 /**
  * Created by krygin on 06.08.17.
@@ -41,7 +42,7 @@ public class ExaminationComparisionWrapperFragment extends BaseFragment implemen
 
 
     @Override
-    public void onOculusSnapshotPreviewClick(GetExaminationsUseCase.Snapshot snapshot) {
+    public void onOculusSnapshotPreviewClick(Snapshot snapshot) {
         getChildFragmentManager().beginTransaction().replace(R.id.container, new OculusSnapshotFragment()).commit();
     }
 }

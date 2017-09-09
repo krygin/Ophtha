@@ -23,12 +23,14 @@ import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.BaseActivity;
 import ru.krygin.ophtha.examination.CreateOrUpdateExaminationActivity;
 import ru.krygin.ophtha.examination.ExaminationsPerOculusPagerAdapter;
+import ru.krygin.ophtha.examination.OculusExaminationsListFragment;
+import ru.krygin.ophtha.patients.model.Patient;
 
 /**
  * Created by krygin on 05.08.17.
  */
 
-public class PatientActivity extends BaseActivity {
+public class PatientActivity extends BaseActivity implements OculusExaminationsListFragment.PatientUUIDProvider {
 
     private static final String EXTRA_PATIENT_UUID = "EXTRA_PATIENT_UUID";
     @BindView(R.id.toolbar)
@@ -76,7 +78,7 @@ public class PatientActivity extends BaseActivity {
         getUseCaseHandler().execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(mPatientUUID), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
             @Override
             public void onSuccess(GetPatientUseCase.ResponseValue response) {
-                PatientsRepository.Patient patient = response.getPatient();
+                Patient patient = response.getPatient();
                 mPatientNameTextView.setText(String.format("%s %s %s", patient.getLastName(), patient.getFirstName(), patient.getPatronymic()));
                 mPatientBirthdayTextView.setText(DateTimeUtils.getDateString(patient.getBirthday()));
                 mPatientIdTextView.setText(patient.getPatientId());
@@ -99,8 +101,12 @@ public class PatientActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.compare_menu_item:
-                Intent intent = new Intent(this, ExaminationComparisionActivity.class);
-                startActivity(intent);
+                Intent compareExaminationsIntent = new Intent(this, ExaminationComparisionActivity.class);
+                startActivity(compareExaminationsIntent);
+                return true;
+            case R.id.edit_menu_item:
+                Intent editPatientIntent = CreateOrUpdatePatientActivity.newIntent(this, mPatientUUID);
+                startActivity(editPatientIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -109,7 +115,7 @@ public class PatientActivity extends BaseActivity {
 
     @OnClick(R.id.fab)
     void onClick(View view) {
-        Intent intent = new Intent(this, CreateOrUpdateExaminationActivity.class);
+        Intent intent = CreateOrUpdateExaminationActivity.newIntent(this);
         startActivity(intent);
     }
 
@@ -117,5 +123,10 @@ public class PatientActivity extends BaseActivity {
         Intent intent = new Intent(context, PatientActivity.class);
         intent.putExtra(EXTRA_PATIENT_UUID, patientUUID);
         return intent;
+    }
+
+    @Override
+    public long getPatientUUID() {
+        return mPatientUUID;
     }
 }

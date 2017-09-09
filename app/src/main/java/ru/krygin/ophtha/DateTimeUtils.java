@@ -22,9 +22,19 @@ public class DateTimeUtils {
         return DateFormat.getDateInstance().format(date);
     }
 
+    public static String getDateString(Calendar calendar) {
+        return getDateString(calendar.getTime());
+    }
+
     public static Date getDate(int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dayOfMonth);
         return calendar.getTime();
+    }
+
+    public static Calendar getCalendar(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
     }
 }

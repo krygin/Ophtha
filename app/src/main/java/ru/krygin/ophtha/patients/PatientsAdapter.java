@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.krygin.ophtha.DateTimeUtils;
 import ru.krygin.ophtha.R;
+import ru.krygin.ophtha.patients.model.Patient;
 
 /**
  * Created by krygin on 02.08.17.
@@ -21,7 +22,7 @@ import ru.krygin.ophtha.R;
 
 public class PatientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<PatientsRepository.Patient> mPatients = new ArrayList<>();
+    private List<Patient> mPatients = new ArrayList<>();
     private OnPatientClickListener mOnPatientClickListener;
 
     public void setOnPatientClickListener(OnPatientClickListener onPatientClickListener) {
@@ -37,7 +38,7 @@ public class PatientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        PatientsRepository.Patient patient = mPatients.get(position);
+        Patient patient = mPatients.get(position);
         viewHolder.patientNameTextView.setText(String.format("%s %s", patient.getLastName(), patient.getFirstName()));
         viewHolder.patientBirthdayTextView.setText(DateTimeUtils.getDateString(patient.getBirthday()));
 
@@ -48,7 +49,7 @@ public class PatientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return mPatients.size();
     }
 
-    public void setPatients(List<PatientsRepository.Patient> patients) {
+    public void setPatients(List<Patient> patients) {
         mPatients.clear();
         if (patients != null) {
             mPatients.addAll(patients);
@@ -56,7 +57,7 @@ public class PatientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public interface OnPatientClickListener {
-        void onPatientClick(PatientsRepository.Patient patient);
+        void onPatientClick(Patient patient);
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
@@ -69,7 +70,7 @@ public class PatientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         @OnClick(R.id.item_view)
         protected void OnClick(View view) {
-            PatientsRepository.Patient patient = mPatients.get(getAdapterPosition());
+            Patient patient = mPatients.get(getAdapterPosition());
             if (mOnPatientClickListener != null) {
                 mOnPatientClickListener.onPatientClick(patient);
             }

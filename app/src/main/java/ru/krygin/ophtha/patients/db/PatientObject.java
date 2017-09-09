@@ -2,8 +2,10 @@ package ru.krygin.ophtha.patients.db;
 
 import java.util.Date;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import ru.krygin.ophtha.examination.db.ExaminationObject;
 
 /**
  * Created by krygin on 20.08.17.
@@ -23,11 +25,14 @@ public class PatientObject extends RealmObject {
     private String patientId;
 
 
+    RealmList<ExaminationObject> examinations = new RealmList<>();
+
+
     public long getUUID() {
         return UUID;
     }
 
-    public void setId(long UUID) {
+    public void setUUID(long UUID) {
         this.UUID = UUID;
     }
 
@@ -79,4 +84,7 @@ public class PatientObject extends RealmObject {
         this.patientId = patientId;
     }
 
+    public RealmList<ExaminationObject> getExaminations() {
+        return examinations;
+    }
 }

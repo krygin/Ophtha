@@ -16,6 +16,8 @@ import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.TitledFragment;
 import ru.krygin.ophtha.examination.GetExaminationsUseCase;
+import ru.krygin.ophtha.examination.model.Examination;
+import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
 
 /**
@@ -75,22 +77,21 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getUseCaseHandler().execute(new GetExaminationsUseCase(), new GetExaminationsUseCase.RequestValues(0, getOculus()), new UseCase.UseCaseCallback<GetExaminationsUseCase.ResponseValue>() {
+        getUseCaseHandler().execute(new GetExaminationsUseCase(), new GetExaminationsUseCase.RequestValues(0), new UseCase.UseCaseCallback<GetExaminationsUseCase.ResponseValue>() {
             @Override
             public void onSuccess(GetExaminationsUseCase.ResponseValue response) {
                 mOculusExaminationsAdapter.removeAllSections();
                 ExaminationSection.OnShapshotClickListener onShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
                     @Override
-                    public void onSnapshotClick(GetExaminationsUseCase.Snapshot snapshot) {
+                    public void onSnapshotClick(Snapshot snapshot) {
                         mOnOculusSnapshotPreviewClickListener.onOculusSnapshotPreviewClick(snapshot);
                     }
                 };
-                for (GetExaminationsUseCase.Examination examination: response.getExaminations()) {
-                    ExaminationSection examinationSection = new ExaminationSection(examination.getTitle(), examination.getDate(), examination.getSnapshots());
-                    examinationSection.setOnSnapshotClickListener(onShapshotClickListener);
-                    mOculusExaminationsAdapter.addSection(examinationSection);
+                Examination examination = response.getExamination();
+                ExaminationSection examinationSection = new ExaminationSection(examination.getTitle(), examination.getDate(), examination.getSnapshots());
+                examinationSection.setOnSnapshotClickListener(onShapshotClickListener);
+                mOculusExaminationsAdapter.addSection(examinationSection);
 
-                }
                 mOculusExaminationsAdapter.notifyDataSetChanged();
             }
 

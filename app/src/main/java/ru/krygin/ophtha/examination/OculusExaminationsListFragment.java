@@ -1,5 +1,6 @@
 package ru.krygin.ophtha.examination;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +16,11 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.TitledFragment;
+import ru.krygin.ophtha.examination.model.Examination;
+import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
+import ru.krygin.ophtha.patients.GetPatientUseCase;
+import ru.krygin.ophtha.patients.model.Patient;
 import ru.krygin.ophtha.snapshot.ViewSnapshotActivity;
 
 /**
@@ -29,11 +34,18 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
 
 
     private SectionedRecyclerViewAdapter mSectionedRecyclerViewAdapter;
+    private PatientUUIDProvider mPatientUUIDProvider;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mPatientUUIDProvider = (PatientUUIDProvider) context;
     }
 
     @Nullable
@@ -66,24 +78,36 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getUseCaseHandler().execute(new GetExaminationsUseCase(), new GetExaminationsUseCase.RequestValues(0, getOculus()), new UseCase.UseCaseCallback<GetExaminationsUseCase.ResponseValue>() {
+        getUseCaseHandler().execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(mPatientUUIDProvider.getPatientUUID()), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
             @Override
-            public void onSuccess(GetExaminationsUseCase.ResponseValue response) {
+            public void onSuccess(GetPatientUseCase.ResponseValue response) {
+                Patient patient = response.getPatient();
                 mSectionedRecyclerViewAdapter.removeAllSections();
+
                 ExaminationSection.OnShapshotClickListener onShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
                     @Override
-                    public void onSnapshotClick(GetExaminationsUseCase.Snapshot snapshot) {
+                    public void onSnapshotClick(Snapshot snapshot) {
                         Intent intent = new Intent(getContext(), ViewSnapshotActivity.class);
                         startActivity(intent);
                     }
                 };
 
-                for (GetExaminationsUseCase.Examination examination: response.getExaminations()) {
-                    ExaminationSection examinationSection = new ExaminationSection(examination.getTitle(), examination.getDate(), examination.getSnapshots());
+                ExaminationSection.OnExaminationClickListener onExaminationClickListener = new ExaminationSection.OnExaminationClickListener() {
+                    @Override
+                    public void onExaminationClick(Examination examination) {
+                        Intent intent = CreateOrUpdateExaminationActivity.newIntent(getContext(), examination.getUUID());
+                        startActivity(intent);
+                    }
+                };
+
+                for (Examination examination: patient.getExaminations()) {
+                    ExaminationSection examinationSection = new ExaminationSection(examination);
                     examinationSection.setOnShapshotClickListener(onShapshotClickListener);
+                    examinationSection.setOnSectionClickListener(onExaminationClickListener);
                     mSectionedRecyclerViewAdapter.addSection(examinationSection);
                 }
                 mSectionedRecyclerViewAdapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -91,8 +115,42 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
 
             }
         });
+
+
+//        getUseCaseHandler().execute(new GetExaminationsUseCase(), new GetExaminationsUseCase.RequestValues(0, getOculus()), new UseCase.UseCaseCallback<GetExaminationsUseCase.ResponseValue>() {
+//            @Override
+//            public void onSuccess(GetExaminationsUseCase.ResponseValue response) {
+//                mSectionedRecyclerViewAdapter.removeAllSections();
+//                ExaminationSection.OnShapshotClickListener onShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
+//                    @Override
+//                    public void onSnapshotClick(Snapshot snapshot) {
+//                        Intent intent = new Intent(getContext(), ViewSnapshotActivity.class);
+//                        startActivity(intent);
+//                    }
+//                };
+//
+//                for (Examination examination: response.getExaminations()) {
+//                    ExaminationSection examinationSection = new ExaminationSection(examination.getTitle(), examination.getDate(), examination.getSnapshots());
+//                    examinationSection.setOnShapshotClickListener(onShapshotClickListener);
+//                    mSectionedRecyclerViewAdapter.addSection(examinationSection);
+//                }
+//                mSectionedRecyclerViewAdapter.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onError() {
+//
+//            }
+//        });
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mPatientUUIDProvider = null;
+    }
 
-
+    public interface PatientUUIDProvider {
+        long getPatientUUID();
+    }
 }

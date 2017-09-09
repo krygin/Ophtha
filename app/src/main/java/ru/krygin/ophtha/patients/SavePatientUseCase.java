@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
+import ru.krygin.ophtha.patients.model.Patient;
 
 /**
  * Created by krygin on 20.08.17.
@@ -26,13 +27,13 @@ public class SavePatientUseCase extends UseCase<SavePatientUseCase.RequestValues
 
     public static class RequestValues implements UseCase.RequestValues {
 
-        private final PatientsRepository.Patient mPatient;
+        private final Patient mPatient;
 
-        public RequestValues(PatientsRepository.Patient patient) {
+        public RequestValues(Patient patient) {
             mPatient = patient;
         }
 
-        public PatientsRepository.Patient getPatient() {
+        public Patient getPatient() {
             return mPatient;
         }
     }

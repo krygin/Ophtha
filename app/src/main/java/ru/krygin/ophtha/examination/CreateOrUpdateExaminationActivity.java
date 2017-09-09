@@ -1,6 +1,7 @@
 package ru.krygin.ophtha.examination;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -27,13 +28,17 @@ import me.relex.photodraweeview.PhotoDraweeView;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.ui.BaseActivity;
 import ru.krygin.ophtha.oculus.Oculus;
+import ru.krygin.ophtha.patients.PatientActivity;
 
 /**
  * Created by krygin on 14.08.17.
  */
 
-public class CreateOrUpdateExaminationActivity extends BaseActivity implements OculusExaminationFragment.OnAddSnapshotButtonClickListener {
+public class CreateOrUpdateExaminationActivity extends BaseActivity implements
+        OculusExaminationFragment.OnAddSnapshotButtonClickListener,
+        OculusExaminationFragment.ExaminationUUIDProvider {
 
+    private static final String EXTRA_EXAMINATION_UUID = "EXTRA_EXAMINATION_UUID";
     @BindView(R.id.tab_layout)
     TabLayout mTabLayout;
 
@@ -45,6 +50,7 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements O
 
     private CreateOrUpdateExaminationPagerAdapter mPagerAdapter;
     private Uri mPhotoUri;
+    private long mExaminationUUID;
 
 
     @Override
@@ -52,6 +58,7 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_or_update_examination);
         ButterKnife.bind(this);
+        mExaminationUUID = getIntent().getLongExtra(EXTRA_EXAMINATION_UUID, 0);
         setSupportActionBar(mToolbar);
         mPagerAdapter = new CreateOrUpdateExaminationPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
@@ -83,5 +90,21 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements O
             takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivityForResult(takePictureIntent, 123);
         }
+    }
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, CreateOrUpdateExaminationActivity.class);
+        return intent;
+    }
+
+    public static Intent newIntent(Context context, long examinationUUID) {
+        Intent intent = newIntent(context);
+        intent.putExtra(EXTRA_EXAMINATION_UUID, examinationUUID);
+        return intent;
+    }
+
+    @Override
+    public long getExaminationUUID() {
+        return mExaminationUUID;
     }
 }

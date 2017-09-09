@@ -14,6 +14,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.krygin.ophtha.R;
+import ru.krygin.ophtha.examination.model.Snapshot;
 
 /**
  * Created by krygin on 14.08.17.
@@ -22,7 +23,7 @@ import ru.krygin.ophtha.R;
 public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshotsAdapter.ViewHolder> {
 
 
-    private List<GetExaminationsUseCase.Snapshot> mSnapshots = new ArrayList<>();
+    private List<Snapshot> mSnapshots = new ArrayList<>();
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -32,7 +33,7 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        GetExaminationsUseCase.Snapshot snapshot = mSnapshots.get(position);
+        Snapshot snapshot = mSnapshots.get(position);
         holder.imageView.setImageURI(snapshot.getSnapshotUri());
         holder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
 
@@ -43,7 +44,7 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
         return mSnapshots.size();
     }
 
-    public void setSnapshots(List<GetExaminationsUseCase.Snapshot> snapshots) {
+    public void setSnapshots(List<Snapshot> snapshots) {
         mSnapshots.clear();
         if (snapshots != null) {
             mSnapshots.addAll(snapshots);

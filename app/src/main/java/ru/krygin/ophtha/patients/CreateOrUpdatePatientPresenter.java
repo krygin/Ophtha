@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.async.UseCaseHandler;
+import ru.krygin.ophtha.patients.model.Patient;
 
 /**
  * Created by krygin on 20.08.17.
@@ -26,9 +27,16 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
     }
 
 
-    public void savePatient(int id, String lastName, String firstName, String patronymic, PatientsRepository.Patient.Gender gender, String patientId, Date birthday) {
-        PatientsRepository.Patient patient = new PatientsRepository.Patient(id, lastName, firstName, patronymic, gender, patientId, birthday);
+    public void savePatient(long id, String lastName, String firstName, String patronymic, Patient.Gender gender, String patientId, Date birthday) {
 
+        Patient patient = new Patient();
+        patient.setUUID(id);
+        patient.setLastName(lastName);
+        patient.setFirstName(firstName);
+        patient.setPatronymic(patronymic);
+        patient.setGender(gender);
+        patient.setPatientId(patientId);
+        patient.setBirthday(birthday);
 
         SavePatientUseCase.RequestValues requestValues = new SavePatientUseCase.RequestValues(patient);
 
@@ -36,6 +44,21 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
             @Override
             public void onSuccess(SavePatientUseCase.ResponseValue response) {
                 getViewState().close();
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+
+    public void loadPatient(long patientUUID) {
+        mUseCaseHandler.execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(patientUUID), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
+            @Override
+            public void onSuccess(GetPatientUseCase.ResponseValue response) {
+                Patient patient = response.getPatient();
+                getViewState().showPatient(patient);
             }
 
             @Override

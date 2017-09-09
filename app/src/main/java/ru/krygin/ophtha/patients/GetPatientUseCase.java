@@ -1,11 +1,10 @@
 package ru.krygin.ophtha.patients;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
+import ru.krygin.ophtha.patients.model.Patient;
 
 /**
  * Created by krygin on 06.09.17.
@@ -23,7 +22,7 @@ public class GetPatientUseCase extends UseCase<GetPatientUseCase.RequestValues, 
 
     @Override
     protected void executeUseCase(GetPatientUseCase.RequestValues requestValues) {
-        PatientsRepository.Patient patient = mPatientsRepository.getPatient(requestValues.getPatientUUID());
+        Patient patient = mPatientsRepository.getPatient(requestValues.getPatientUUID());
         GetPatientUseCase.ResponseValue responseValue = new GetPatientUseCase.ResponseValue(patient);
         getUseCaseCallback().onSuccess(responseValue);
     }
@@ -43,13 +42,13 @@ public class GetPatientUseCase extends UseCase<GetPatientUseCase.RequestValues, 
 
     public static class ResponseValue implements UseCase.ResponseValue {
 
-        private final PatientsRepository.Patient mPatient;
+        private final Patient mPatient;
 
-        public ResponseValue(PatientsRepository.Patient patient) {
+        public ResponseValue(Patient patient) {
             mPatient = patient;
         }
 
-        public PatientsRepository.Patient getPatient() {
+        public Patient getPatient() {
             return mPatient;
         }
     }
