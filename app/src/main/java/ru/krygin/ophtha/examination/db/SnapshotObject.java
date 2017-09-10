@@ -4,6 +4,7 @@ import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import ru.krygin.ophtha.oculus.Oculus;
 
 /**
  * Created by krygin on 09.09.17.
@@ -16,7 +17,7 @@ public class SnapshotObject extends RealmObject {
 
     private String filename;
     private Date timestamp;
-    private boolean oculus; // true - dexter, false - sinister
+    private Boolean oculus; // true - dexter, false - sinister
     private String comment;
 
     public void setUUID(long UUID) {
@@ -43,7 +44,7 @@ public class SnapshotObject extends RealmObject {
         return timestamp;
     }
 
-    public void setOculus(boolean oculus) {
+    public void setOculus(Boolean oculus) {
         this.oculus = oculus;
     }
 

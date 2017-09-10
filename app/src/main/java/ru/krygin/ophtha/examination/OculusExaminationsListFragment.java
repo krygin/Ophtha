@@ -101,7 +101,7 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
                 };
 
                 for (Examination examination: patient.getExaminations()) {
-                    ExaminationSection examinationSection = new ExaminationSection(examination);
+                    ExaminationSection examinationSection = new ExaminationSection(examination, getOculus());
                     examinationSection.setOnShapshotClickListener(onShapshotClickListener);
                     examinationSection.setOnSectionClickListener(onExaminationClickListener);
                     mSectionedRecyclerViewAdapter.addSection(examinationSection);

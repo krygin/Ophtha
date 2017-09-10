@@ -17,6 +17,8 @@ public class Examination {
     private List<Snapshot> mSnapshots;
     private String mTitle;
     private Date mDate;
+    private String comment;
+    private String diognasis;
 
 
     public String getTitle() {
@@ -49,5 +51,13 @@ public class Examination {
 
     public void setDate(Date date) {
         mDate = date;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public String getDiognasis() {
+        return diognasis;
     }
 }

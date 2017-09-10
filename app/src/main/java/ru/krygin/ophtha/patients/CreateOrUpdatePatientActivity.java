@@ -15,6 +15,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -118,9 +119,7 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
     @Override
     protected void onResume() {
         super.onResume();
-        if (mPatientUUID > 0) {
-            mPresenter.loadPatient(mPatientUUID);
-        }
+        mPresenter.loadPatient(mPatientUUID);
     }
 
     @Override
@@ -155,7 +154,7 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
         mPatronymicTextInputLayout.getEditText().setText(patient.getPatronymic());
         Calendar calendar = DateTimeUtils.getCalendar(patient.getBirthday());
         mPatientBirthdayTextInputLayout.getEditText().setText(DateTimeUtils.getDateString(calendar));
-        mPatientBirthdayTextInputLayout.getEditText().setTag(calendar);
+        mPatientBirthdayTextInputLayout.getEditText().setTag(calendar.getTime());
         mPatientIdTextInputLayout.getEditText().setText(patient.getPatientId());
 
         mGenderSpinner.setSelection(patient.getGender().ordinal());

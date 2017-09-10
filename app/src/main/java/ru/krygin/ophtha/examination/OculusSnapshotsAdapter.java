@@ -34,7 +34,7 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Snapshot snapshot = mSnapshots.get(position);
-        holder.imageView.setImageURI(snapshot.getSnapshotUri());
+        holder.imageView.setImageURI(snapshot.getFilename());
         holder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
 
     }

@@ -17,8 +17,6 @@ public class GetExaminationsUseCase extends UseCase<GetExaminationsUseCase.Reque
 
     public static class RequestValues implements UseCase.RequestValues {
 
-        private long mPatientId;
-        private Oculus mOculus;
         private final long mExaminationUUID;
 
         public RequestValues(long examinationUUID) {

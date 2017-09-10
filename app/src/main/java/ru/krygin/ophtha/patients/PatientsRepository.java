@@ -4,7 +4,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -15,6 +14,7 @@ import ru.krygin.ophtha.examination.db.ExaminationObject;
 import ru.krygin.ophtha.examination.db.SnapshotObject;
 import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.oculus.Oculus;
 import ru.krygin.ophtha.patients.db.PatientObject;
 import ru.krygin.ophtha.patients.model.Patient;
 
@@ -25,32 +25,7 @@ import ru.krygin.ophtha.patients.model.Patient;
 public class PatientsRepository {
 
     public void createOrUpdatePatient(Patient patient) {
-        PatientObject patientObject = new PatientObject();
-        patientObject.setUUID(patient.getUUID());
-        patientObject.setFirstName(patient.getFirstName());
-        patientObject.setLastName(patient.getLastName());
-        patientObject.setPatronymic(patient.getPatronymic());
-        patientObject.setGender(patient.getGender().toBoolean());
-        patientObject.setPatientId(patient.getPatientId());
-        patientObject.setBirthday(patient.getBirthday());
-
-        SnapshotObject snapshotObject = new SnapshotObject();
-        snapshotObject.setUUID(System.currentTimeMillis());
-        snapshotObject.setFilename("http://www.yvetrov.ru/UserFiles/Image/yv_os.jpg");
-        snapshotObject.setTimestamp(new Date(System.currentTimeMillis()));
-        snapshotObject.setComment("Новый коммент");
-        snapshotObject.setOculus(true);
-
-        ExaminationObject examinationObject = new ExaminationObject();
-        examinationObject.setUUID(System.currentTimeMillis());
-        examinationObject.setTitle("Title 1");
-        examinationObject.setComment("Коммент к исследованию");
-        examinationObject.setDiagnosis("Миопия");
-        examinationObject.setDate(new Date(System.currentTimeMillis()));
-
-        examinationObject.getSnapshots().add(snapshotObject);
-
-        patientObject.getExaminations().add(examinationObject);
+        PatientObject patientObject = patientTransformerReverse.apply(patient);
 
         Realm realm = Realm.getDefaultInstance();
 
@@ -103,6 +78,29 @@ public class PatientsRepository {
         }
     };
 
+    public static Function<Patient, PatientObject> patientTransformerReverse = new Function<Patient, PatientObject>() {
+        @Nullable
+        @Override
+        public PatientObject apply(@Nullable Patient input) {
+            if (input == null) {
+                return null;
+            }
+            PatientObject patientObject = new PatientObject();
+            patientObject.setUUID(input.getUUID());
+            patientObject.setFirstName(input.getFirstName());
+            patientObject.setLastName(input.getLastName());
+            patientObject.setPatronymic(input.getPatronymic());
+            patientObject.setGender(input.getGender().toBoolean());
+            patientObject.setPatientId(input.getPatientId());
+            patientObject.setBirthday(input.getBirthday());
+
+            Iterable<ExaminationObject> examinationObjects = Iterables.transform(input.getExaminations(), examinationTransformerReverse);
+            List<ExaminationObject> filteredExaminationObjects = Lists.newArrayList(examinationObjects);
+            patientObject.getExaminations().addAll(filteredExaminationObjects);
+            return patientObject;
+        }
+    };
+
     public static Function<ExaminationObject, Examination> examinationTransformer = new Function<ExaminationObject, Examination>() {
         @Nullable
         @Override
@@ -122,6 +120,26 @@ public class PatientsRepository {
         }
     };
 
+    public static Function<Examination, ExaminationObject> examinationTransformerReverse = new Function<Examination, ExaminationObject>() {
+        @Nullable
+        @Override
+        public ExaminationObject apply(@Nullable Examination input) {
+            if (input == null) {
+                return null;
+            }
+            ExaminationObject examinationObject = new ExaminationObject();
+            examinationObject.setUUID(input.getUUID());
+            examinationObject.setTitle(input.getTitle());
+            examinationObject.setComment(input.getComment());
+            examinationObject.setDiagnosis(input.getDiognasis());
+            examinationObject.setDate(input.getDate());
+            Iterable<SnapshotObject> snapshotObjects = Iterables.transform(input.getSnapshots(), snapshotTransformerReverse);
+            List<SnapshotObject> filteredSnapshotObjects = Lists.newArrayList(snapshotObjects);
+            examinationObject.getSnapshots().addAll(filteredSnapshotObjects);
+            return examinationObject;
+        }
+    };
+
     public static Function<SnapshotObject, Snapshot> snapshotTransformer = new Function<SnapshotObject, Snapshot>() {
         @Nullable
         @Override
@@ -129,8 +147,30 @@ public class PatientsRepository {
             if (input == null) {
                 return null;
             }
-            Snapshot snapshot = new Snapshot(input.getUUID(), input.getFilename(), input.getComment());
+            Snapshot snapshot = new Snapshot();
+            snapshot.setUUID(input.getUUID());
+            snapshot.setFilename(input.getFilename());
+            snapshot.setComment(input.getComment());
+            snapshot.setTimestamp(input.getTimestamp());
+            snapshot.setOculus(Oculus.fromBoolean(input.getOculus()));
             return snapshot;
+        }
+    };
+
+    public static Function<Snapshot, SnapshotObject> snapshotTransformerReverse = new Function<Snapshot, SnapshotObject>() {
+        @Nullable
+        @Override
+        public SnapshotObject apply(@Nullable Snapshot input) {
+            if (input == null) {
+                return null;
+            }
+            SnapshotObject snapshotObject = new SnapshotObject();
+            snapshotObject.setUUID(input.getUUID());
+            snapshotObject.setFilename(input.getFilename());
+            snapshotObject.setTimestamp(input.getTimestamp());
+            snapshotObject.setComment(input.getComment());
+            snapshotObject.setOculus(input.getOculus().toBoolean());
+            return snapshotObject;
         }
     };
 }

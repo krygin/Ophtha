@@ -22,23 +22,25 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
     @Inject
     UseCaseHandler mUseCaseHandler;
 
+    private Patient mPatient;
+
     public CreateOrUpdatePatientPresenter() {
         Injector.getAppComponent().inject(this);
     }
 
 
     public void savePatient(long id, String lastName, String firstName, String patronymic, Patient.Gender gender, String patientId, Date birthday) {
+        if (mPatient.getUUID() == 0) {
+            mPatient.setUUID(System.currentTimeMillis());
+        }
+        mPatient.setLastName(lastName);
+        mPatient.setFirstName(firstName);
+        mPatient.setPatronymic(patronymic);
+        mPatient.setGender(gender);
+        mPatient.setPatientId(patientId);
+        mPatient.setBirthday(birthday);
 
-        Patient patient = new Patient();
-        patient.setUUID(id);
-        patient.setLastName(lastName);
-        patient.setFirstName(firstName);
-        patient.setPatronymic(patronymic);
-        patient.setGender(gender);
-        patient.setPatientId(patientId);
-        patient.setBirthday(birthday);
-
-        SavePatientUseCase.RequestValues requestValues = new SavePatientUseCase.RequestValues(patient);
+        SavePatientUseCase.RequestValues requestValues = new SavePatientUseCase.RequestValues(mPatient);
 
         mUseCaseHandler.execute(new SavePatientUseCase(), requestValues, new UseCase.UseCaseCallback<SavePatientUseCase.ResponseValue>() {
             @Override
@@ -54,17 +56,24 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
     }
 
     public void loadPatient(long patientUUID) {
-        mUseCaseHandler.execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(patientUUID), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
-            @Override
-            public void onSuccess(GetPatientUseCase.ResponseValue response) {
-                Patient patient = response.getPatient();
-                getViewState().showPatient(patient);
-            }
+        if (mPatient != null) {
+            getViewState().showPatient(mPatient);
+        } else {
+            mUseCaseHandler.execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(patientUUID), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
+                @Override
+                public void onSuccess(GetPatientUseCase.ResponseValue response) {
+                    mPatient = response.getPatient();
+                    if (mPatient == null) {
+                        mPatient = new Patient();
+                    }
+                    getViewState().showPatient(mPatient);
+                }
 
-            @Override
-            public void onError() {
+                @Override
+                public void onError() {
 
-            }
-        });
+                }
+            });
+        }
     }
 }

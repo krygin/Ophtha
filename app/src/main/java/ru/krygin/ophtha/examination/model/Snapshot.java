@@ -2,26 +2,62 @@ package ru.krygin.ophtha.examination.model;
 
 import android.net.Uri;
 
+import java.util.Date;
+
+import ru.krygin.ophtha.oculus.Oculus;
+
 /**
  * Created by krygin on 09.09.17.
  */
 
 public class Snapshot {
-    private final String mFilename;
-    private final String mComment;
-    private final long mUUID;
+    private long UUID;
+    private Date timestamp;
+    private Oculus oculus;
+    private String filename;
+    private String comment;
 
-    public Snapshot(long UUID, String filename, String comment) {
-        mUUID = UUID;
-        mFilename = filename;
-        mComment = comment;
+    public Snapshot() {
+
     }
 
-    public String getSnapshotUri() {
-        return mFilename;
+    public String getFilename() {
+        return filename;
     }
 
     public String getComment() {
-        return mComment;
+        return comment;
+    }
+
+    public long getUUID() {
+        return UUID;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public Oculus getOculus() {
+        return oculus;
+    }
+
+    public void setUUID(long UUID) {
+        this.UUID = UUID;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setOculus(Oculus oculus) {
+        this.oculus = oculus;
     }
 }

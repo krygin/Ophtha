@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import ru.krygin.ophtha.R;
-import ru.krygin.ophtha.examination.GetExaminationsUseCase;
 import ru.krygin.ophtha.examination.model.Snapshot;
 
 /**
@@ -51,7 +50,7 @@ public class ExaminationSection extends StatelessSection {
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         Snapshot snapshot = mSnapshots.get(position);
-        itemViewHolder.imageView.setImageURI(snapshot.getSnapshotUri());
+        itemViewHolder.imageView.setImageURI(snapshot.getFilename());
         itemViewHolder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

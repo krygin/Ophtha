@@ -6,9 +6,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -18,6 +19,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.oculus.Oculus;
 
 /**
  * Created by krygin on 06.08.17.
@@ -26,13 +28,15 @@ import ru.krygin.ophtha.examination.model.Snapshot;
 public class ExaminationSection extends StatelessSection {
 
     private final Examination mExamination;
+    private final Oculus mOculus;
     private OnShapshotClickListener mOnSnapshotClickListener;
     private OnExaminationClickListener mOnSectionClickListener;
 
-    public ExaminationSection(Examination examination) {
+    public ExaminationSection(Examination examination, Oculus oculus) {
         super(new SectionParameters.Builder(R.layout.item_oculus_examination_snapshot_preview)
                 .headerResourceId(R.layout.item_oculus_examination_info_header).build());
         mExamination = examination;
+        mOculus = oculus;
     }
 
     void setOnShapshotClickListener(OnShapshotClickListener onShapshotClickListener) {
@@ -41,7 +45,7 @@ public class ExaminationSection extends StatelessSection {
 
     @Override
     public int getContentItemsTotal() {
-        return mExamination.getSnapshots().size();
+        return getFilteredByOculusSnapshots(mExamination.getSnapshots()).size();
     }
 
     @Override
@@ -52,8 +56,8 @@ public class ExaminationSection extends StatelessSection {
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        Snapshot snapshot = mExamination.getSnapshots().get(position);
-        itemViewHolder.imageView.setImageURI(snapshot.getSnapshotUri());
+        Snapshot snapshot = getFilteredByOculusSnapshots(mExamination.getSnapshots()).get(position);
+        itemViewHolder.imageView.setImageURI(snapshot.getFilename());
         itemViewHolder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,4 +128,9 @@ public class ExaminationSection extends StatelessSection {
     public interface OnExaminationClickListener {
         void onExaminationClick(Examination examination);
     }
+
+    private List<Snapshot> getFilteredByOculusSnapshots(List<Snapshot> snapshots) {
+        Iterable<Snapshot> filteredSnapshots = Iterables.filter(snapshots, input -> input.getOculus().equals(mOculus));
+        return Lists.newArrayList(filteredSnapshots);
+    };
 }
