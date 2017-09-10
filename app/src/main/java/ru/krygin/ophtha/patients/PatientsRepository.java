@@ -111,6 +111,8 @@ public class PatientsRepository {
             Examination examination = new Examination();
             examination.setUUID(input.getUUID());
             examination.setTitle(input.getTitle());
+            examination.setComment(input.getComment());
+            examination.setDiagnosis(input.getDiagnosis());
             examination.setDate(input.getDate());
 
             Iterable<Snapshot> snapshots = Iterables.transform(input.getSnapshots(), snapshotTransformer);
@@ -131,7 +133,7 @@ public class PatientsRepository {
             examinationObject.setUUID(input.getUUID());
             examinationObject.setTitle(input.getTitle());
             examinationObject.setComment(input.getComment());
-            examinationObject.setDiagnosis(input.getDiognasis());
+            examinationObject.setDiagnosis(input.getDiagnosis());
             examinationObject.setDate(input.getDate());
             Iterable<SnapshotObject> snapshotObjects = Iterables.transform(input.getSnapshots(), snapshotTransformerReverse);
             List<SnapshotObject> filteredSnapshotObjects = Lists.newArrayList(snapshotObjects);

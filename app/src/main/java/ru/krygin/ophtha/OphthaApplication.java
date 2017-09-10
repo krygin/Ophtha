@@ -39,8 +39,8 @@ public class OphthaApplication extends Application {
 
         PatientObject patientObject = new PatientObject();
         patientObject.setUUID(UUIDGenerator.incrementAndGet());
-        patientObject.setFirstName("Крыгин");
-        patientObject.setLastName("Иван");
+        patientObject.setFirstName("Иван");
+        patientObject.setLastName("Крыгин");
         patientObject.setPatronymic("Александрович");
         patientObject.setGender(Patient.Gender.M.toBoolean());
         patientObject.setPatientId("123123123");
@@ -120,7 +120,16 @@ public class OphthaApplication extends Application {
         ExaminationObject examinationObject1 = new ExaminationObject();
         examinationObject1.setUUID(UUIDGenerator.incrementAndGet());
         examinationObject1.setTitle("Title 2");
-        examinationObject1.setComment("Коммент к исследованию 2");
+        examinationObject1.setComment("Исследование в проходящем свете используют для диагностики патологии " +
+                "в хрусталике и в стекловидном теле. Это прозрачные оптические среды глаза. " +
+                "Исследование проводится в темной комнате. Матовую лампу мощностью около 100 Вт устанавливают " +
+                "слева и несколько позади больного. Врач садится напротив на расстоянии 30–40 см и смотрит " +
+                "через отверстие глазного зеркала – офтальмоскопа правым глазом, направляя отраженный зеркалом " +
+                "офтальмоскопа пучок света в зрачок больного. Свет проходит внутрь глаза и отражается от сосудистой " +
+                "оболочки и пигментного эпителия, при этом зрачок «загорается» красным цветом. Красный цвет объясняется " +
+                "отчасти просвечиванием крови сосудистой оболочки, отчасти красно-бурым оттенком ретикального пигмента. " +
+                "Ход лучей от зеркала в глаз и ход отраженного пучка по закону сопряженных фокусов совпадают. " +
+                "В глаз врача через отверстие в офтальмоскопе попадают отраженные от глазного дна лучи, и зрачок светится.");
         examinationObject1.setDiagnosis("Катаракта");
         examinationObject1.setDate(new Date(System.currentTimeMillis()));
 

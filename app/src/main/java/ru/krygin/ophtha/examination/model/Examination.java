@@ -15,14 +15,14 @@ public class Examination {
     private long UUID;
 
     private List<Snapshot> mSnapshots;
-    private String mTitle;
+    private String title;
     private Date mDate;
     private String comment;
-    private String diognasis;
+    private String diagnosis;
 
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public Date getDate() {
@@ -46,7 +46,7 @@ public class Examination {
     }
 
     public void setTitle(String title) {
-        mTitle = title;
+        this.title = title;
     }
 
     public void setDate(Date date) {
@@ -57,7 +57,15 @@ public class Examination {
         return comment;
     }
 
-    public String getDiognasis() {
-        return diognasis;
+    public String getDiagnosis() {
+        return diagnosis;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
     }
 }

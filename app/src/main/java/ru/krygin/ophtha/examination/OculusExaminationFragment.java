@@ -38,9 +38,6 @@ public abstract class OculusExaminationFragment extends TitledFragment {
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    @BindView(R.id.add_snapshot_button)
-    Button mAddSnapshotButton;
-
 
     private OculusSnapshotsAdapter mOculusSnapshotsAdapter;
     private OnAddSnapshotButtonClickListener mOnAddSnapshotButtonClickListener;
@@ -57,7 +54,7 @@ public abstract class OculusExaminationFragment extends TitledFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mOculusSnapshotsAdapter = new OculusSnapshotsAdapter();
+        mOculusSnapshotsAdapter = new OculusSnapshotsAdapter(getOculus());
     }
 
     @Nullable
@@ -99,14 +96,6 @@ public abstract class OculusExaminationFragment extends TitledFragment {
         super.onDetach();
         mOnAddSnapshotButtonClickListener = null;
         mExaminationUUIDProvider = null;
-    }
-
-    @OnClick(R.id.add_snapshot_button)
-    void onClick(View view) {
-        dispatchTakePictureIntent();
-        if (mOnAddSnapshotButtonClickListener != null) {
-            //mOnAddSnapshotButtonClickListener.onAddSnapshotButtonClick(getOculus());
-        }
     }
 
     interface OnAddSnapshotButtonClickListener {

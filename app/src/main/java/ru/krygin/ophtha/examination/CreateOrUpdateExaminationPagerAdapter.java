@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.krygin.ophtha.core.ui.TitledFragment;
+import ru.krygin.ophtha.oculus.Oculus;
 
 /**
  * Created by krygin on 14.08.17.
@@ -18,7 +19,7 @@ import ru.krygin.ophtha.core.ui.TitledFragment;
 public class CreateOrUpdateExaminationPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources mResources;
-    private List<TitledFragment> mFragments = new ArrayList<>();
+    private List<OculusExaminationFragment> mFragments = new ArrayList<>();
 
     public CreateOrUpdateExaminationPagerAdapter(Resources resources, FragmentManager fm) {
         super(fm);
@@ -41,5 +42,9 @@ public class CreateOrUpdateExaminationPagerAdapter extends FragmentPagerAdapter 
     public CharSequence getPageTitle(int position) {
         @StringRes int titleResId = mFragments.get(position).getTitleResId();
         return titleResId != 0 ? mResources.getString(titleResId) : "";
+    }
+
+    public Oculus getOculus(int position) {
+        return mFragments.get(position).getOculus();
     }
 }

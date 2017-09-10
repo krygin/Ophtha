@@ -3,45 +3,49 @@ package ru.krygin.ophtha.examination;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.TextView;
+
+import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.relex.photodraweeview.PhotoDraweeView;
+import ru.krygin.ophtha.DateTimeUtils;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.ui.BaseActivity;
+import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.oculus.Oculus;
-import ru.krygin.ophtha.patients.PatientActivity;
 
 /**
  * Created by krygin on 14.08.17.
  */
 
-public class CreateOrUpdateExaminationActivity extends BaseActivity implements
+public class ExaminationActivity extends BaseActivity implements
         OculusExaminationFragment.OnAddSnapshotButtonClickListener,
-        OculusExaminationFragment.ExaminationUUIDProvider {
+        OculusExaminationFragment.ExaminationUUIDProvider,
+        ExaminationView {
 
     private static final String EXTRA_EXAMINATION_UUID = "EXTRA_EXAMINATION_UUID";
+
+    @InjectPresenter
+    ExaminationActivityPresenter mPresenter;
+
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
+
     @BindView(R.id.tab_layout)
     TabLayout mTabLayout;
 
@@ -51,9 +55,16 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
+    @BindView(R.id.diagnosis_text_view)
+    TextView mDiagnosisTextView;
+
+    @BindView(R.id.comment_text_view)
+    TextView mCommentTextView;
+
     private CreateOrUpdateExaminationPagerAdapter mPagerAdapter;
     private Uri mPhotoUri;
     private long mExaminationUUID;
+
 
 
     @Override
@@ -66,6 +77,28 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements
         mPagerAdapter = new CreateOrUpdateExaminationPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mFab.setOnClickListener(v -> mPresenter.addOculusSnapshot(mPagerAdapter.getOculus(position)));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.loadExamination(mExaminationUUID);
     }
 
     @Override
@@ -96,7 +129,7 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements
     }
 
     public static Intent newIntent(Context context) {
-        Intent intent = new Intent(context, CreateOrUpdateExaminationActivity.class);
+        Intent intent = new Intent(context, ExaminationActivity.class);
         return intent;
     }
 
@@ -109,5 +142,49 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements
     @Override
     public long getExaminationUUID() {
         return mExaminationUUID;
+    }
+
+    @Override
+    public void showExamination(Examination examination) {
+        getSupportActionBar().setTitle(examination.getTitle());
+        getSupportActionBar().setSubtitle(DateTimeUtils.getDateString(examination.getDate()));
+
+        mDiagnosisTextView.setText(examination.getDiagnosis());
+        mCommentTextView.setText(examination.getComment());
+    }
+
+    @Override
+    public void requestNewSnapshot(Oculus oculus) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        ComponentName componentName = takePictureIntent.resolveActivity(getPackageManager());
+        if (componentName != null) {
+            // Create the File where the photo should go
+            File photoFolder = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "oculus_snapshots");
+            if (!photoFolder.exists()) {
+                photoFolder.mkdirs();
+            }
+            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", System.currentTimeMillis(), Oculus.DEXTER.name()));
+            // Continue only if the File was successfully created
+            mPhotoUri = FileProvider.getUriForFile(this,
+                    "ru.krygin.ophtha.fileprovider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
+            takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivityForResult(takePictureIntent, 123);
+        }
+    }
+
+    @Override
+    public void notifyChanges() {
+        mPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 123:
+                mPresenter.addNewSnapshot(mPhotoUri.toString());
+        }
     }
 }

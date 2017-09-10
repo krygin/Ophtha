@@ -95,7 +95,7 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
                 ExaminationSection.OnExaminationClickListener onExaminationClickListener = new ExaminationSection.OnExaminationClickListener() {
                     @Override
                     public void onExaminationClick(Examination examination) {
-                        Intent intent = CreateOrUpdateExaminationActivity.newIntent(getContext(), examination.getUUID());
+                        Intent intent = ExaminationActivity.newIntent(getContext(), examination.getUUID());
                         startActivity(intent);
                     }
                 };

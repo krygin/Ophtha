@@ -32,7 +32,7 @@
         <activity android:name=".snapshot.ViewSnapshotActivity" />
         <activity android:name=".comparation.ExaminationComparisionActivity" />
         <activity android:name=".patients.CreateOrUpdatePatientActivity" />
-        <activity android:name=".examination.CreateOrUpdateExaminationActivity" />
+        <activity android:name=".examination.ExaminationActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

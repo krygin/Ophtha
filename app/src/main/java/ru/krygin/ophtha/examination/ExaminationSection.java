@@ -132,5 +132,5 @@ public class ExaminationSection extends StatelessSection {
     private List<Snapshot> getFilteredByOculusSnapshots(List<Snapshot> snapshots) {
         Iterable<Snapshot> filteredSnapshots = Iterables.filter(snapshots, input -> input.getOculus().equals(mOculus));
         return Lists.newArrayList(filteredSnapshots);
-    };
+    }
 }

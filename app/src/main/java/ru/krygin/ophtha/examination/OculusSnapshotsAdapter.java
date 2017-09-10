@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.oculus.Oculus;
 
 /**
  * Created by krygin on 14.08.17.
@@ -23,7 +26,12 @@ import ru.krygin.ophtha.examination.model.Snapshot;
 public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshotsAdapter.ViewHolder> {
 
 
+    private final Oculus mOculus;
     private List<Snapshot> mSnapshots = new ArrayList<>();
+
+    public OculusSnapshotsAdapter(Oculus oculus) {
+        mOculus = oculus;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -33,7 +41,7 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Snapshot snapshot = mSnapshots.get(position);
+        Snapshot snapshot = getFilteredByOculusSnapshots(mSnapshots).get(position);
         holder.imageView.setImageURI(snapshot.getFilename());
         holder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
 
@@ -41,7 +49,7 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
 
     @Override
     public int getItemCount() {
-        return mSnapshots.size();
+        return getFilteredByOculusSnapshots(mSnapshots).size();
     }
 
     public void setSnapshots(List<Snapshot> snapshots) {
@@ -63,5 +71,10 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    private List<Snapshot> getFilteredByOculusSnapshots(List<Snapshot> snapshots) {
+        Iterable<Snapshot> filteredSnapshots = Iterables.filter(snapshots, input -> input.getOculus().equals(mOculus));
+        return Lists.newArrayList(filteredSnapshots);
     }
 }

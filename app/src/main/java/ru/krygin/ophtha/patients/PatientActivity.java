@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +21,7 @@ import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.comparation.ExaminationComparisionActivity;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.BaseActivity;
-import ru.krygin.ophtha.examination.CreateOrUpdateExaminationActivity;
+import ru.krygin.ophtha.examination.ExaminationActivity;
 import ru.krygin.ophtha.examination.ExaminationsPerOculusPagerAdapter;
 import ru.krygin.ophtha.examination.OculusExaminationsListFragment;
 import ru.krygin.ophtha.patients.model.Patient;
@@ -67,7 +66,7 @@ public class PatientActivity extends BaseActivity implements OculusExaminationsL
         mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
 
         setSupportActionBar(mToolbar);
-        setTitle("Карта пациента");
+        getSupportActionBar().setTitle("Карта пациента");
         mExaminationPerOculusPagerAdapter = new ExaminationsPerOculusPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mExaminationPerOculusPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -116,7 +115,7 @@ public class PatientActivity extends BaseActivity implements OculusExaminationsL
 
     @OnClick(R.id.fab)
     void onClick(View view) {
-        Intent intent = CreateOrUpdateExaminationActivity.newIntent(this);
+        Intent intent = ExaminationActivity.newIntent(this);
         startActivity(intent);
     }
 
