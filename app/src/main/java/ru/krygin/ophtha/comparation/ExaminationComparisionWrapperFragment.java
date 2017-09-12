@@ -18,7 +18,7 @@ import ru.krygin.ophtha.examination.model.Snapshot;
  * Created by krygin on 06.08.17.
  */
 
-public class ExaminationComparisionWrapperFragment extends BaseFragment implements OnOculusSnapshotPreviewClickListener {
+public class ExaminationComparisionWrapperFragment extends BaseFragment implements OnOculusSnapshotPreviewClickListener, OnCloseOculusPreviewButtonClickListener {
 
     @BindView(R.id.container)
     FrameLayout mContent;
@@ -37,12 +37,19 @@ public class ExaminationComparisionWrapperFragment extends BaseFragment implemen
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getChildFragmentManager().beginTransaction().replace(R.id.container, new ExaminationsComparisionFragment()).commit();
+        if (savedInstanceState == null) {
+            getChildFragmentManager().beginTransaction().replace(R.id.container, new ExaminationsComparisionFragment()).commit();
+        }
     }
 
 
     @Override
     public void onOculusSnapshotPreviewClick(Snapshot snapshot) {
-        getChildFragmentManager().beginTransaction().replace(R.id.container, new OculusSnapshotFragment()).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.container, OculusSnapshotFragment.newInstance(snapshot.getUUID())).addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onCloseOculusPreviewButtonClickListener() {
+        getChildFragmentManager().popBackStack();
     }
 }

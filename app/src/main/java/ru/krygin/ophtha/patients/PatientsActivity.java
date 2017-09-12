@@ -32,6 +32,7 @@ public class PatientsActivity extends BaseActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Список пациентов");
 
         mPatientsAdapter = new PatientsAdapter();
         mPatientsAdapter.setOnPatientClickListener(patient -> {

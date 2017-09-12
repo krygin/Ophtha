@@ -13,7 +13,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -35,7 +34,7 @@ import ru.krygin.ophtha.oculus.Oculus;
 
 public class ExaminationActivity extends BaseActivity implements
         OculusExaminationFragment.OnAddSnapshotButtonClickListener,
-        OculusExaminationFragment.ExaminationUUIDProvider,
+        ExaminationUUIDProvider,
         ExaminationView {
 
     private static final String EXTRA_EXAMINATION_UUID = "EXTRA_EXAMINATION_UUID";
@@ -64,7 +63,7 @@ public class ExaminationActivity extends BaseActivity implements
     private CreateOrUpdateExaminationPagerAdapter mPagerAdapter;
     private Uri mPhotoUri;
     private long mExaminationUUID;
-
+    private long mPhotoTimestamp;
 
 
     @Override
@@ -117,7 +116,7 @@ public class ExaminationActivity extends BaseActivity implements
             if (!photoFolder.exists()) {
                 photoFolder.mkdirs();
             }
-            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", System.currentTimeMillis(), Oculus.DEXTER.name()));
+            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", mPhotoTimestamp, Oculus.DEXTER.name()));
             // Continue only if the File was successfully created
             mPhotoUri = FileProvider.getUriForFile(this,
                     "ru.krygin.ophtha.fileprovider",
@@ -164,7 +163,8 @@ public class ExaminationActivity extends BaseActivity implements
             if (!photoFolder.exists()) {
                 photoFolder.mkdirs();
             }
-            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", System.currentTimeMillis(), Oculus.DEXTER.name()));
+            mPhotoTimestamp = System.currentTimeMillis();
+            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", mPhotoTimestamp, Oculus.DEXTER.name()));
             // Continue only if the File was successfully created
             mPhotoUri = FileProvider.getUriForFile(this,
                     "ru.krygin.ophtha.fileprovider",
@@ -184,7 +184,7 @@ public class ExaminationActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 123:
-                mPresenter.addNewSnapshot(mPhotoUri.toString());
+                mPresenter.addNewSnapshot(mPhotoUri.toString(), mPhotoTimestamp);
         }
     }
 }

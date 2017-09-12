@@ -149,8 +149,4 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
         super.onDetach();
         mPatientUUIDProvider = null;
     }
-
-    public interface PatientUUIDProvider {
-        long getPatientUUID();
-    }
 }

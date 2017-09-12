@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
+import ru.krygin.ophtha.oculus.Oculus;
 import ru.krygin.ophtha.patients.model.Patient;
 
 /**

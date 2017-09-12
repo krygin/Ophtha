@@ -23,14 +23,14 @@ import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.BaseActivity;
 import ru.krygin.ophtha.examination.ExaminationActivity;
 import ru.krygin.ophtha.examination.ExaminationsPerOculusPagerAdapter;
-import ru.krygin.ophtha.examination.OculusExaminationsListFragment;
+import ru.krygin.ophtha.examination.PatientUUIDProvider;
 import ru.krygin.ophtha.patients.model.Patient;
 
 /**
  * Created by krygin on 05.08.17.
  */
 
-public class PatientActivity extends BaseActivity implements OculusExaminationsListFragment.PatientUUIDProvider {
+public class PatientActivity extends BaseActivity implements PatientUUIDProvider {
 
     private static final String EXTRA_PATIENT_UUID = "EXTRA_PATIENT_UUID";
     @BindView(R.id.toolbar)
@@ -101,7 +101,7 @@ public class PatientActivity extends BaseActivity implements OculusExaminationsL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.compare_menu_item:
-                Intent compareExaminationsIntent = new Intent(this, ExaminationComparisionActivity.class);
+                Intent compareExaminationsIntent = ExaminationComparisionActivity.newIntent(this, mPatientUUID);
                 startActivity(compareExaminationsIntent);
                 return true;
             case R.id.edit_menu_item:

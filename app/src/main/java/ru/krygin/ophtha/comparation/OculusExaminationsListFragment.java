@@ -15,10 +15,11 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.TitledFragment;
-import ru.krygin.ophtha.examination.GetExaminationsUseCase;
+import ru.krygin.ophtha.examination.PatientUUIDProvider;
 import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
+import ru.krygin.ophtha.patients.GetPatientUseCase;
 
 /**
  * Created by krygin on 06.08.17.
@@ -30,17 +31,20 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
     RecyclerView mRecyclerView;
     private SectionedRecyclerViewAdapter mOculusExaminationsAdapter;
     private OnOculusSnapshotPreviewClickListener mOnOculusSnapshotPreviewClickListener;
+    private PatientUUIDProvider mPatientUUIDProvider;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mOnOculusSnapshotPreviewClickListener = (OnOculusSnapshotPreviewClickListener) getParentFragment();
+        mPatientUUIDProvider = (PatientUUIDProvider) getActivity();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mOnOculusSnapshotPreviewClickListener = null;
+        mPatientUUIDProvider = null;
     }
 
     @Override
@@ -58,13 +62,13 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 8);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 4);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
                 switch (mOculusExaminationsAdapter.getSectionItemViewType(position)) {
                     case SectionedRecyclerViewAdapter.VIEW_TYPE_HEADER:
-                        return 8;
+                        return 4;
                     default:
                         return 1;
                 }
@@ -77,9 +81,9 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
     @Override
     public void onResume() {
         super.onResume();
-        getUseCaseHandler().execute(new GetExaminationsUseCase(), new GetExaminationsUseCase.RequestValues(0), new UseCase.UseCaseCallback<GetExaminationsUseCase.ResponseValue>() {
+        getUseCaseHandler().execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(mPatientUUIDProvider.getPatientUUID()), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
             @Override
-            public void onSuccess(GetExaminationsUseCase.ResponseValue response) {
+            public void onSuccess(GetPatientUseCase.ResponseValue response) {
                 mOculusExaminationsAdapter.removeAllSections();
                 ExaminationSection.OnShapshotClickListener onShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
                     @Override
@@ -87,11 +91,12 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
                         mOnOculusSnapshotPreviewClickListener.onOculusSnapshotPreviewClick(snapshot);
                     }
                 };
-                Examination examination = response.getExamination();
-                ExaminationSection examinationSection = new ExaminationSection(examination.getTitle(), examination.getDate(), examination.getSnapshots());
-                examinationSection.setOnSnapshotClickListener(onShapshotClickListener);
-                mOculusExaminationsAdapter.addSection(examinationSection);
 
+                for (Examination examination : response.getPatient().getExaminations()) {
+                    ExaminationSection examinationSection = new ExaminationSection(examination, getOculus());
+                    examinationSection.setOnShapshotClickListener(onShapshotClickListener);
+                    mOculusExaminationsAdapter.addSection(examinationSection);
+                }
                 mOculusExaminationsAdapter.notifyDataSetChanged();
             }
 

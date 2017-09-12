@@ -6,9 +6,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -16,7 +17,9 @@ import butterknife.ButterKnife;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import ru.krygin.ophtha.R;
+import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.oculus.Oculus;
 
 /**
  * Created by krygin on 06.08.17.
@@ -24,38 +27,44 @@ import ru.krygin.ophtha.examination.model.Snapshot;
 
 public class ExaminationSection extends StatelessSection {
 
-    private final String mTitle;
-    private final Date mDate;
-    private final List<Snapshot> mSnapshots;
+    private final Examination mExamination;
+    private final Oculus mOculus;
     private OnShapshotClickListener mOnSnapshotClickListener;
+    private OnExaminationClickListener mOnSectionClickListener;
 
-    public ExaminationSection(String title, Date date, List<Snapshot> snapshots) {
+    public ExaminationSection(Examination examination, Oculus oculus) {
         super(new SectionParameters.Builder(R.layout.item_oculus_examination_snapshot_preview)
                 .headerResourceId(R.layout.item_oculus_examination_info_header).build());
-        mTitle = title;
-        mDate = date;
-        mSnapshots = snapshots;
+        mExamination = examination;
+        mOculus = oculus;
     }
 
-    public void setOnSnapshotClickListener(OnShapshotClickListener onSnapshotClickListener) {
-        mOnSnapshotClickListener = onSnapshotClickListener;
+    void setOnShapshotClickListener(OnShapshotClickListener onShapshotClickListener) {
+        mOnSnapshotClickListener = onShapshotClickListener;
     }
 
     @Override
     public int getContentItemsTotal() {
-        return mSnapshots.size();
+        return getFilteredByOculusSnapshots(mExamination.getSnapshots()).size();
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getItemViewHolder(View view) {
+        return new ItemViewHolder(view);
     }
 
     @Override
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        Snapshot snapshot = mSnapshots.get(position);
+        Snapshot snapshot = getFilteredByOculusSnapshots(mExamination.getSnapshots()).get(position);
         itemViewHolder.imageView.setImageURI(snapshot.getFilename());
         itemViewHolder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnSnapshotClickListener.onSnapshotClick(snapshot);
+                if (mOnSnapshotClickListener != null) {
+                    mOnSnapshotClickListener.onSnapshotClick(snapshot);
+                }
             }
         });
     }
@@ -66,16 +75,22 @@ public class ExaminationSection extends StatelessSection {
     }
 
     @Override
-    public RecyclerView.ViewHolder getItemViewHolder(View view) {
-        return new ItemViewHolder(view);
-    }
-
-    @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        headerViewHolder.oculusExaminationTitleTextView.setText(mTitle);
-        headerViewHolder.oculusExaminationDateTextView.setText(DateFormat.getDateInstance().format(mDate));
+        headerViewHolder.oculusExaminationTitleTextView.setText(mExamination.getTitle());
+        headerViewHolder.oculusExaminationDateTextView.setText(DateFormat.getDateInstance().format(mExamination.getDate()));
+        headerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnSectionClickListener != null) {
+                    mOnSectionClickListener.onExaminationClick(mExamination);
+                }
+            }
+        });
+    }
 
+    public void setOnSectionClickListener(OnExaminationClickListener onSectionClickListener) {
+        mOnSectionClickListener = onSectionClickListener;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -108,5 +123,14 @@ public class ExaminationSection extends StatelessSection {
 
     public interface OnShapshotClickListener {
         void onSnapshotClick(Snapshot snapshot);
+    }
+
+    public interface OnExaminationClickListener {
+        void onExaminationClick(Examination examination);
+    }
+
+    private List<Snapshot> getFilteredByOculusSnapshots(List<Snapshot> snapshots) {
+        Iterable<Snapshot> filteredSnapshots = Iterables.filter(snapshots, input -> input.getOculus().equals(mOculus));
+        return Lists.newArrayList(filteredSnapshots);
     }
 }

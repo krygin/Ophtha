@@ -58,8 +58,9 @@ public class ExaminationActivityPresenter extends MvpPresenter<ExaminationView> 
         mPendingOculusToAdd = oculus;
     }
 
-    public void addNewSnapshot(String photoUri) {
+    public void addNewSnapshot(String photoUri, long photoTimestamp) {
         Snapshot snapshot = new Snapshot();
+        snapshot.setUUID(photoTimestamp);
         snapshot.setFilename(photoUri);
         snapshot.setOculus(mPendingOculusToAdd);
         mExamination.getSnapshots().add(snapshot);
