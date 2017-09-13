@@ -16,12 +16,12 @@ import ru.krygin.ophtha.oculus.Oculus;
  * Created by krygin on 14.08.17.
  */
 
-public class CreateOrUpdateExaminationPagerAdapter extends FragmentPagerAdapter {
+public class ExaminationPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources mResources;
     private List<OculusExaminationFragment> mFragments = new ArrayList<>();
 
-    public CreateOrUpdateExaminationPagerAdapter(Resources resources, FragmentManager fm) {
+    public ExaminationPagerAdapter(Resources resources, FragmentManager fm) {
         super(fm);
         mResources = resources;
         mFragments.add(new OculusDexterExaminationFragment());

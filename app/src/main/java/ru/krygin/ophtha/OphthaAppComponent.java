@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import ru.krygin.ophtha.core.ui.BaseActivity;
 import ru.krygin.ophtha.core.ui.BaseFragment;
+import ru.krygin.ophtha.examination.CreateOrUpdateExaminationPresenter;
 import ru.krygin.ophtha.examination.ExaminationActivityPresenter;
 import ru.krygin.ophtha.patients.CreateOrUpdatePatientPresenter;
 import ru.krygin.ophtha.patients.GetPatientUseCase;
@@ -36,4 +37,6 @@ public interface OphthaAppComponent {
     void inject(GetPatientUseCase getPatientUseCase);
 
     void inject(ExaminationActivityPresenter examinationPresenter);
+
+    void inject(CreateOrUpdateExaminationPresenter createOrUpdateExaminationPresenter);
 }

@@ -29,7 +29,7 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
     }
 
 
-    public void savePatient(long id, String lastName, String firstName, String patronymic, Patient.Gender gender, String patientId, Date birthday) {
+    public void savePatient(String lastName, String firstName, String patronymic, Patient.Gender gender, String patientId, Date birthday) {
         if (mPatient.getUUID() == 0) {
             mPatient.setUUID(System.currentTimeMillis());
         }
@@ -63,10 +63,9 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
                 @Override
                 public void onSuccess(GetPatientUseCase.ResponseValue response) {
                     mPatient = response.getPatient();
-                    if (mPatient == null) {
-                        mPatient = new Patient();
+                    if (mPatient != null) {
+                        getViewState().showPatient(mPatient);
                     }
-                    getViewState().showPatient(mPatient);
                 }
 
                 @Override

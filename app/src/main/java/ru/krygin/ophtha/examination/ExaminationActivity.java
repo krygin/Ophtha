@@ -13,6 +13,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -60,7 +62,7 @@ public class ExaminationActivity extends BaseActivity implements
     @BindView(R.id.comment_text_view)
     TextView mCommentTextView;
 
-    private CreateOrUpdateExaminationPagerAdapter mPagerAdapter;
+    private ExaminationPagerAdapter mPagerAdapter;
     private Uri mPhotoUri;
     private long mExaminationUUID;
     private long mPhotoTimestamp;
@@ -69,11 +71,11 @@ public class ExaminationActivity extends BaseActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_or_update_examination);
+        setContentView(R.layout.activity_examination);
         ButterKnife.bind(this);
         mExaminationUUID = getIntent().getLongExtra(EXTRA_EXAMINATION_UUID, 0);
         setSupportActionBar(mToolbar);
-        mPagerAdapter = new CreateOrUpdateExaminationPagerAdapter(getResources(), getSupportFragmentManager());
+        mPagerAdapter = new ExaminationPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -92,6 +94,24 @@ public class ExaminationActivity extends BaseActivity implements
 
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_examination, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit_menu_item:
+                Intent intent = CreateOrUpdateExaminationActivity.newIntent(this, mExaminationUUID);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

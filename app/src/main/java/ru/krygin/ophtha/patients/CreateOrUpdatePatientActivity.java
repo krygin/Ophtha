@@ -85,7 +85,7 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
         mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        setTitle("Новый пациент");
+        getSupportActionBar().setTitle("Новый пациент");
 
         ArrayAdapter spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList(Patient.Gender.M, Patient.Gender.F));
 //        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -106,8 +106,9 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         Date date = DateTimeUtils.getDate(year, month, dayOfMonth);
                         String newDate = DateTimeUtils.getDateString(date);
+                        Calendar dateToTag = DateTimeUtils.getCalendar(date);
                         mPatientBirthdayTextInputLayout.getEditText().setText(newDate);
-                        mPatientBirthdayTextInputLayout.getEditText().setTag(date);
+                        mPatientBirthdayTextInputLayout.getEditText().setTag(dateToTag);
                     }
                 }, birthdayCalendar.get(Calendar.YEAR), birthdayCalendar.get(Calendar.MONTH), birthdayCalendar.get(Calendar.DATE));
                 datePickerDialog.getDatePicker().setMaxDate(DateTimeUtils.getCurrentCalendar().getTimeInMillis());
@@ -133,13 +134,12 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
         switch (item.getItemId()) {
             case R.id.action_save:
                 mPresenter.savePatient(
-                        mPatientUUID > 0 ? mPatientUUID : System.currentTimeMillis(),
                         mFirstNameTextInputLayout.getEditText().getText().toString(),
                         mLastNameTextInputLayout.getEditText().getText().toString(),
                         mPatronymicTextInputLayout.getEditText().getText().toString(),
                         (Patient.Gender) mGenderSpinner.getSelectedItem(),
                         mPatientIdTextInputLayout.getEditText().getText().toString(),
-                        (Date) mPatientBirthdayTextInputLayout.getEditText().getTag()
+                        ((Calendar) mPatientBirthdayTextInputLayout.getEditText().getTag()).getTime()
                 );
                 return true;
             default:

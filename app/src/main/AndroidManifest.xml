@@ -33,6 +33,7 @@
         <activity android:name=".comparation.ExaminationComparisionActivity" />
         <activity android:name=".patients.CreateOrUpdatePatientActivity" />
         <activity android:name=".examination.ExaminationActivity" />
+        <activity android:name=".examination.CreateOrUpdateExaminationActivity"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -44,10 +45,6 @@
                 android:resource="@xml/paths" />
         </provider>
 
-        <activity
-            android:name=".patients.ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
-            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

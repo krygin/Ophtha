@@ -21,6 +21,7 @@ import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.comparation.ExaminationComparisionActivity;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.BaseActivity;
+import ru.krygin.ophtha.examination.CreateOrUpdateExaminationActivity;
 import ru.krygin.ophtha.examination.ExaminationActivity;
 import ru.krygin.ophtha.examination.ExaminationsPerOculusPagerAdapter;
 import ru.krygin.ophtha.examination.PatientUUIDProvider;
@@ -115,7 +116,7 @@ public class PatientActivity extends BaseActivity implements PatientUUIDProvider
 
     @OnClick(R.id.fab)
     void onClick(View view) {
-        Intent intent = ExaminationActivity.newIntent(this);
+        Intent intent = CreateOrUpdateExaminationActivity.newIntent(this);
         startActivity(intent);
     }
 
