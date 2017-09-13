@@ -49,9 +49,9 @@ public class CreateOrUpdateExaminationPresenter extends MvpPresenter<CreateOrUpd
 
     }
 
-    void saveExamination(String title, Date date, String diagnosis, String comment) {
-
-        if (mExamination.getUUID() == 0) {
+    void saveExamination(long patientUUID, String title, Date date, String diagnosis, String comment) {
+        if (mExamination == null) {
+            mExamination = new Examination();
             mExamination.setUUID(System.currentTimeMillis());
         }
         mExamination.setTitle(title);
@@ -59,7 +59,7 @@ public class CreateOrUpdateExaminationPresenter extends MvpPresenter<CreateOrUpd
         mExamination.setDiagnosis(diagnosis);
         mExamination.setComment(comment);
 
-        SaveExaminationUseCase.RequestValues requestValues = new SaveExaminationUseCase.RequestValues(mExamination);
+        SaveExaminationUseCase.RequestValues requestValues = new SaveExaminationUseCase.RequestValues(patientUUID, mExamination);
 
         mUseCaseHandler.execute(new SaveExaminationUseCase(), requestValues, new UseCase.UseCaseCallback<SaveExaminationUseCase.ResponseValue>() {
             @Override

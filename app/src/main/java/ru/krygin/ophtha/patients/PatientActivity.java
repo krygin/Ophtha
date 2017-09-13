@@ -68,6 +68,7 @@ public class PatientActivity extends BaseActivity implements PatientUUIDProvider
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Карта пациента");
+        getSupportActionBar().setLogo(R.drawable.ic_smart_sight_icon);
         mExaminationPerOculusPagerAdapter = new ExaminationsPerOculusPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mExaminationPerOculusPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -116,7 +117,7 @@ public class PatientActivity extends BaseActivity implements PatientUUIDProvider
 
     @OnClick(R.id.fab)
     void onClick(View view) {
-        Intent intent = CreateOrUpdateExaminationActivity.newIntent(this);
+        Intent intent = CreateOrUpdateExaminationActivity.newIntent(this, mPatientUUID);
         startActivity(intent);
     }
 

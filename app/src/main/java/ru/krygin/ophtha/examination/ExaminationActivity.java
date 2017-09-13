@@ -40,6 +40,7 @@ public class ExaminationActivity extends BaseActivity implements
         ExaminationView {
 
     private static final String EXTRA_EXAMINATION_UUID = "EXTRA_EXAMINATION_UUID";
+    private static final String EXTRA_PATIENT_UUID = "EXTRA_PATIENT_UUID";
 
     @InjectPresenter
     ExaminationActivityPresenter mPresenter;
@@ -66,6 +67,7 @@ public class ExaminationActivity extends BaseActivity implements
     private Uri mPhotoUri;
     private long mExaminationUUID;
     private long mPhotoTimestamp;
+    private long mPatientUUID;
 
 
     @Override
@@ -74,6 +76,7 @@ public class ExaminationActivity extends BaseActivity implements
         setContentView(R.layout.activity_examination);
         ButterKnife.bind(this);
         mExaminationUUID = getIntent().getLongExtra(EXTRA_EXAMINATION_UUID, 0);
+        mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
         setSupportActionBar(mToolbar);
         mPagerAdapter = new ExaminationPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
@@ -106,7 +109,7 @@ public class ExaminationActivity extends BaseActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_menu_item:
-                Intent intent = CreateOrUpdateExaminationActivity.newIntent(this, mExaminationUUID);
+                Intent intent = CreateOrUpdateExaminationActivity.newIntent(this, mPatientUUID, mExaminationUUID);
                 startActivity(intent);
                 return true;
             default:
@@ -152,9 +155,10 @@ public class ExaminationActivity extends BaseActivity implements
         return intent;
     }
 
-    public static Intent newIntent(Context context, long examinationUUID) {
+    public static Intent newIntent(Context context, long patientUUID, long examinationUUID) {
         Intent intent = newIntent(context);
         intent.putExtra(EXTRA_EXAMINATION_UUID, examinationUUID);
+        intent.putExtra(EXTRA_PATIENT_UUID, patientUUID);
         return intent;
     }
 
@@ -204,7 +208,7 @@ public class ExaminationActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 123:
-                mPresenter.addNewSnapshot(mPhotoUri.toString(), mPhotoTimestamp);
+                mPresenter.addNewSnapshot(mPhotoUri.toString(), mPhotoTimestamp, mPatientUUID);
         }
     }
 }

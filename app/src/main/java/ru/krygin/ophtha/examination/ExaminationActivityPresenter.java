@@ -1,7 +1,5 @@
 package ru.krygin.ophtha.examination;
 
-import android.net.Uri;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
@@ -58,14 +56,14 @@ public class ExaminationActivityPresenter extends MvpPresenter<ExaminationView> 
         mPendingOculusToAdd = oculus;
     }
 
-    public void addNewSnapshot(String photoUri, long photoTimestamp) {
+    public void addNewSnapshot(String photoUri, long photoTimestamp, long patientUUID) {
         Snapshot snapshot = new Snapshot();
         snapshot.setUUID(photoTimestamp);
         snapshot.setFilename(photoUri);
         snapshot.setOculus(mPendingOculusToAdd);
         mExamination.getSnapshots().add(snapshot);
 
-        useCaseHandler.execute(new SaveExaminationUseCase(), new SaveExaminationUseCase.RequestValues(mExamination), new UseCase.UseCaseCallback<SaveExaminationUseCase.ResponseValue>() {
+        useCaseHandler.execute(new SaveExaminationUseCase(), new SaveExaminationUseCase.RequestValues(patientUUID, mExamination), new UseCase.UseCaseCallback<SaveExaminationUseCase.ResponseValue>() {
             @Override
             public void onSuccess(SaveExaminationUseCase.ResponseValue response) {
                 getViewState().notifyChanges();

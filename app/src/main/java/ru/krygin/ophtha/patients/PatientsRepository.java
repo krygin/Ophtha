@@ -94,9 +94,12 @@ public class PatientsRepository {
             patientObject.setPatientId(input.getPatientId());
             patientObject.setBirthday(input.getBirthday());
 
-            Iterable<ExaminationObject> examinationObjects = Iterables.transform(input.getExaminations(), examinationTransformerReverse);
-            List<ExaminationObject> filteredExaminationObjects = Lists.newArrayList(examinationObjects);
-            patientObject.getExaminations().addAll(filteredExaminationObjects);
+            List<Examination> examinations = input.getExaminations();
+            if (examinations != null) {
+                Iterable<ExaminationObject> examinationObjects = Iterables.transform(input.getExaminations(), examinationTransformerReverse);
+                List<ExaminationObject> filteredExaminationObjects = Lists.newArrayList(examinationObjects);
+                patientObject.getExaminations().addAll(filteredExaminationObjects);
+            }
             return patientObject;
         }
     };
@@ -135,9 +138,12 @@ public class PatientsRepository {
             examinationObject.setComment(input.getComment());
             examinationObject.setDiagnosis(input.getDiagnosis());
             examinationObject.setDate(input.getDate());
-            Iterable<SnapshotObject> snapshotObjects = Iterables.transform(input.getSnapshots(), snapshotTransformerReverse);
-            List<SnapshotObject> filteredSnapshotObjects = Lists.newArrayList(snapshotObjects);
-            examinationObject.getSnapshots().addAll(filteredSnapshotObjects);
+            List<Snapshot> snapshots = input.getSnapshots();
+            if (snapshots != null) {
+                Iterable<SnapshotObject> snapshotObjects = Iterables.transform(input.getSnapshots(), snapshotTransformerReverse);
+                List<SnapshotObject> filteredSnapshotObjects = Lists.newArrayList(snapshotObjects);
+                examinationObject.getSnapshots().addAll(filteredSnapshotObjects);
+            }
             return examinationObject;
         }
     };

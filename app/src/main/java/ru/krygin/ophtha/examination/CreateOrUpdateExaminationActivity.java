@@ -50,15 +50,19 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
 
 
     private static final String EXTRA_EXAMINATION_UUID = "EXTRA_EXAMINATION_UUID";
-    private long mExaminationUUID;
+    private static final String EXTRA_PATIENT_UUID = "EXTRA_PATIENT_UUID";
 
-    public static Intent newIntent(Context context) {
+    private long mExaminationUUID;
+    private long mPatientUUID;
+
+    public static Intent newIntent(Context context, long patientUUID) {
         Intent intent = new Intent(context, CreateOrUpdateExaminationActivity.class);
+        intent.putExtra(EXTRA_PATIENT_UUID, patientUUID);
         return intent;
     }
 
-    public static Intent newIntent(Context context, long examinationUUID) {
-        Intent intent = newIntent(context);
+    public static Intent newIntent(Context context, long patientUUID, long examinationUUID) {
+        Intent intent = newIntent(context, patientUUID);
         intent.putExtra(EXTRA_EXAMINATION_UUID, examinationUUID);
         return intent;
     }
@@ -70,7 +74,7 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
         mExaminationUUID = getIntent().getLongExtra(EXTRA_EXAMINATION_UUID, 0);
-
+        mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
 
         mDateTextInputLayout.getEditText().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +108,7 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                mPresenter.saveExamination(
+                mPresenter.saveExamination(mPatientUUID,
                         mTitleTextInputLayout.getEditText().getText().toString(),
                         ((Calendar) mDateTextInputLayout.getEditText().getTag()).getTime(),
                         mDiagnosisTextInputLayout.getEditText().getText().toString(),

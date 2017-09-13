@@ -10,11 +10,12 @@ import ru.krygin.ophtha.patients.PatientsRepository;
  * Created by krygin on 11.09.17.
  */
 
-public class SaveExaminationUseCase extends UseCase<SaveExaminationUseCase.RequestValues,SaveExaminationUseCase.ResponseValue> {
+public class SaveExaminationUseCase extends UseCase<SaveExaminationUseCase.RequestValues, SaveExaminationUseCase.ResponseValue> {
 
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
+
         ExaminationObject examinationObject = PatientsRepository.examinationTransformerReverse.apply(requestValues.getExamination());
 
         Realm realm = Realm.getDefaultInstance();
@@ -25,20 +26,25 @@ public class SaveExaminationUseCase extends UseCase<SaveExaminationUseCase.Reque
         realm.commitTransaction();
         realm.close();
 
-
         getUseCaseCallback().onSuccess(new ResponseValue());
     }
 
     public static class RequestValues implements UseCase.RequestValues {
 
         private final Examination mExamination;
+        private final long mPatientUUID;
 
-        public RequestValues(Examination examination) {
+        public RequestValues(long patientUUID, Examination examination) {
+            mPatientUUID = patientUUID;
             mExamination = examination;
         }
 
         public Examination getExamination() {
             return mExamination;
+        }
+
+        public long getPatientUUID() {
+            return mPatientUUID;
         }
     }
 

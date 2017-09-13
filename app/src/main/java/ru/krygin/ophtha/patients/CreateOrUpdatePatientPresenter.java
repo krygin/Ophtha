@@ -30,7 +30,8 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
 
 
     public void savePatient(String lastName, String firstName, String patronymic, Patient.Gender gender, String patientId, Date birthday) {
-        if (mPatient.getUUID() == 0) {
+        if (mPatient == null) {
+            mPatient = new Patient();
             mPatient.setUUID(System.currentTimeMillis());
         }
         mPatient.setLastName(lastName);

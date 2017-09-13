@@ -154,7 +154,7 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
         mPatronymicTextInputLayout.getEditText().setText(patient.getPatronymic());
         Calendar calendar = DateTimeUtils.getCalendar(patient.getBirthday());
         mPatientBirthdayTextInputLayout.getEditText().setText(DateTimeUtils.getDateString(calendar));
-        mPatientBirthdayTextInputLayout.getEditText().setTag(calendar.getTime());
+        mPatientBirthdayTextInputLayout.getEditText().setTag(calendar);
         mPatientIdTextInputLayout.getEditText().setText(patient.getPatientId());
 
         mGenderSpinner.setSelection(patient.getGender().ordinal());
