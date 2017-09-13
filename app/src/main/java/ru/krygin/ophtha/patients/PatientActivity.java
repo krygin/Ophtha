@@ -68,7 +68,7 @@ public class PatientActivity extends BaseActivity implements PatientUUIDProvider
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Карта пациента");
-        getSupportActionBar().setLogo(R.drawable.ic_smart_sight_icon);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mExaminationPerOculusPagerAdapter = new ExaminationsPerOculusPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mExaminationPerOculusPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -102,6 +102,9 @@ public class PatientActivity extends BaseActivity implements PatientUUIDProvider
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.compare_menu_item:
                 Intent compareExaminationsIntent = ExaminationComparisionActivity.newIntent(this, mPatientUUID);
                 startActivity(compareExaminationsIntent);

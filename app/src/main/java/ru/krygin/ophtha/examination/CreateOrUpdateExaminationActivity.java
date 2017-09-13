@@ -75,6 +75,8 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
         setSupportActionBar(mToolbar);
         mExaminationUUID = getIntent().getLongExtra(EXTRA_EXAMINATION_UUID, 0);
         mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
+        getSupportActionBar().setTitle(mExaminationUUID == 0 ? "Новое обследование" : "Редактирование обследования");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDateTextInputLayout.getEditText().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +109,9 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.action_save:
                 mPresenter.saveExamination(mPatientUUID,
                         mTitleTextInputLayout.getEditText().getText().toString(),

@@ -78,6 +78,7 @@ public class ExaminationActivity extends BaseActivity implements
         mExaminationUUID = getIntent().getLongExtra(EXTRA_EXAMINATION_UUID, 0);
         mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mPagerAdapter = new ExaminationPagerAdapter(getResources(), getSupportFragmentManager());
         mViewPager.setAdapter(mPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -108,6 +109,9 @@ public class ExaminationActivity extends BaseActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.edit_menu_item:
                 Intent intent = CreateOrUpdateExaminationActivity.newIntent(this, mPatientUUID, mExaminationUUID);
                 startActivity(intent);
@@ -120,7 +124,7 @@ public class ExaminationActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.loadExamination(mExaminationUUID);
+        mPresenter.loadPatient(mPatientUUID, mExaminationUUID);
     }
 
     @Override
@@ -208,7 +212,7 @@ public class ExaminationActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 123:
-                mPresenter.addNewSnapshot(mPhotoUri.toString(), mPhotoTimestamp, mPatientUUID);
+                mPresenter.addNewSnapshot(mPhotoUri.toString(), mPhotoTimestamp, mExaminationUUID);
         }
     }
 }

@@ -85,7 +85,8 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
         mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Новый пациент");
+        getSupportActionBar().setTitle(mPatientUUID == 0 ? "Новый пациент" : "Редактирование карты");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ArrayAdapter spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList(Patient.Gender.M, Patient.Gender.F));
 //        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -132,6 +133,9 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.action_save:
                 mPresenter.savePatient(
                         mFirstNameTextInputLayout.getEditText().getText().toString(),
