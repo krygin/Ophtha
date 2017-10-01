@@ -12,6 +12,7 @@ import java.sql.SQLException;
 
 import ru.krygin.ophtha.examination.db.ExaminationData;
 import ru.krygin.ophtha.patients.db.PatientData;
+import ru.krygin.ophtha.snapshot.db.SnapshotData;
 
 
 /**
@@ -19,7 +20,7 @@ import ru.krygin.ophtha.patients.db.PatientData;
  */
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
-    private static int DATABASE_VERSION = 2;
+    private static int DATABASE_VERSION = 3;
     private static String DATABASE_NAME = "ophtha_database.db";
 
     public DatabaseHelper(Context context) {
@@ -31,6 +32,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.createTable(connectionSource, PatientData.class);
             TableUtils.createTable(connectionSource, ExaminationData.class);
+            TableUtils.createTable(connectionSource, SnapshotData.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -39,6 +41,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
+            TableUtils.dropTable(connectionSource, SnapshotData.class, true);
             TableUtils.dropTable(connectionSource, ExaminationData.class, true);
             TableUtils.dropTable(connectionSource, PatientData.class, true);
             onCreate(database, connectionSource);

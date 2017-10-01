@@ -1,6 +1,6 @@
 package ru.krygin.ophtha.comparation;
 
-import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 
 /**
  * Created by krygin on 06.08.17.

@@ -6,11 +6,16 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
 import ru.krygin.ophtha.core.Injector;
+import ru.krygin.ophtha.examination.db.ExaminationData;
+import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.patients.db.PatientData;
 import ru.krygin.ophtha.patients.model.Patient;
+import ru.krygin.ophtha.snapshot.db.SnapshotData;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 
 /**
  * Created by krygin on 02.08.17.
@@ -25,7 +30,9 @@ public class OphthaApplication extends Application {
 
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
-        RuntimeExceptionDao<PatientData, Long> dao = databaseHelper.getRuntimeExceptionDao(PatientData.class);
+        RuntimeExceptionDao<PatientData, Long> patientsDAO = databaseHelper.getRuntimeExceptionDao(PatientData.class);
+        RuntimeExceptionDao<ExaminationData, Long> examinationsDAO = databaseHelper.getRuntimeExceptionDao(ExaminationData.class);
+        RuntimeExceptionDao<SnapshotData, Long> snapshotsDAO = databaseHelper.getRuntimeExceptionDao(SnapshotData.class);
 
         PatientData patientData = new PatientData();
         patientData.setFirstName("Иван");
@@ -34,7 +41,28 @@ public class OphthaApplication extends Application {
         patientData.setGender(Patient.Gender.M.toBoolean());
         patientData.setCardNumber("123123123");
         patientData.setDateOfBirth(Calendar.getInstance().getTime());
-        dao.createOrUpdate(patientData);
+
+        ExaminationData examinationData = new ExaminationData();
+        examinationData.setTitle("Title 1");
+        examinationData.setComment("Коммент к исследованию");
+        examinationData.setDiagnosis("Миопия");
+        examinationData.setDate(new Date(System.currentTimeMillis()));
+
+
+        SnapshotData snapshotData = new SnapshotData();
+        snapshotData.setFilename("http://www.yvetrov.ru/UserFiles/Image/yv_os.jpg");
+        snapshotData.setTimestamp(new Date(System.currentTimeMillis()));
+        snapshotData.setComment("Левый глаз 0");
+        snapshotData.setOculus(true);
+
+
+        examinationData.setPatient(patientData);
+        snapshotData.setExaminationData(examinationData);
+
+        patientsDAO.createOrUpdate(patientData);
+        examinationsDAO.createOrUpdate(examinationData);
+        snapshotsDAO.createOrUpdate(snapshotData);
+
 //        Realm.init(this);
 //        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
 //        Realm.deleteRealm(realmConfiguration); // Clean slate

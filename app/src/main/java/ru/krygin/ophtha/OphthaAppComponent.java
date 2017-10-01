@@ -9,11 +9,13 @@ import ru.krygin.ophtha.examination.CreateOrUpdateExaminationPresenter;
 import ru.krygin.ophtha.examination.ExaminationActivityPresenter;
 import ru.krygin.ophtha.examination.use_cases.GetExaminationsUseCase;
 import ru.krygin.ophtha.examination.use_cases.SaveExaminationUseCase;
+import ru.krygin.ophtha.oculus.GetOculusSnapshotUseCase;
 import ru.krygin.ophtha.patients.CreateOrUpdatePatientPresenter;
 import ru.krygin.ophtha.patients.use_cases.GetPatientUseCase;
 import ru.krygin.ophtha.patients.use_cases.GetPatientsUseCase;
 import ru.krygin.ophtha.patients.PatientsModule;
 import ru.krygin.ophtha.patients.use_cases.SavePatientUseCase;
+import ru.krygin.ophtha.snapshot.use_cases.SaveSnapshotUseCase;
 
 /**
  * Created by krygin on 02.08.17.
@@ -45,4 +47,8 @@ public interface OphthaAppComponent {
     void inject(GetExaminationsUseCase getExaminationsUseCase);
 
     void inject(SaveExaminationUseCase saveExaminationUseCase);
+
+    void inject(GetOculusSnapshotUseCase getOculusSnapshotUseCase);
+
+    void inject(SaveSnapshotUseCase saveSnapshotUseCase);
 }

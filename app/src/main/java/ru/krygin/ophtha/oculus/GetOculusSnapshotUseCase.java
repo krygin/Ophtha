@@ -1,10 +1,11 @@
 package ru.krygin.ophtha.oculus;
 
-import io.realm.Realm;
+import javax.inject.Inject;
+
+import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
-import ru.krygin.ophtha.examination.db.SnapshotObject;
-import ru.krygin.ophtha.examination.model.Snapshot;
-import ru.krygin.ophtha.patients.db.PatientsRepository;
+import ru.krygin.ophtha.snapshot.db.SnapshotsRepository;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 
 /**
  * Created by krygin on 13.09.17.
@@ -12,11 +13,16 @@ import ru.krygin.ophtha.patients.db.PatientsRepository;
 
 public class GetOculusSnapshotUseCase extends UseCase<GetOculusSnapshotUseCase.RequestValues, GetOculusSnapshotUseCase.ResponseValue> {
 
+    @Inject
+    SnapshotsRepository mSnapshotsRepository;
+
+    public GetOculusSnapshotUseCase() {
+        Injector.getAppComponent().inject(this);
+    }
+
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-        Realm realm = Realm.getDefaultInstance();
-        SnapshotObject snapshotObject = realm.where(SnapshotObject.class).equalTo("UUID", requestValues.getOculusSnapshotUUID()).findFirst();
-        Snapshot snapshot = PatientsRepository.snapshotTransformer.apply(snapshotObject);
+        Snapshot snapshot = mSnapshotsRepository.getSnapshot(requestValues.getOculusSnapshotUUID());
         ResponseValue responseValue = new ResponseValue(snapshot);
         getUseCaseCallback().onSuccess(responseValue);
     }

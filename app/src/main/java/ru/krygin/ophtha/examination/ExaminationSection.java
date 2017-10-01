@@ -18,7 +18,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.examination.model.Examination;
-import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
 
 /**
@@ -130,7 +130,7 @@ public class ExaminationSection extends StatelessSection {
     }
 
     private List<Snapshot> getFilteredByOculusSnapshots(List<Snapshot> snapshots) {
-        Iterable<Snapshot> filteredSnapshots = Iterables.filter(snapshots, input -> input.getOculus().equals(mOculus));
+        Iterable<Snapshot> filteredSnapshots = snapshots != null ? Iterables.filter(snapshots, input -> input.getOculus().equals(mOculus)) : Iterables.cycle();
         return Lists.newArrayList(filteredSnapshots);
     }
 }

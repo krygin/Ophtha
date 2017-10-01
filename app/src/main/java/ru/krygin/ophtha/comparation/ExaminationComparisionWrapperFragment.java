@@ -11,7 +11,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.ui.BaseFragment;
-import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 
 /**
  * Created by krygin on 06.08.17.

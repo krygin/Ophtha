@@ -17,7 +17,7 @@ import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.TitledFragment;
 import ru.krygin.ophtha.examination.model.Examination;
-import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
 import ru.krygin.ophtha.patients.use_cases.GetPatientUseCase;
 import ru.krygin.ophtha.patients.model.Patient;
@@ -115,33 +115,6 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
 
             }
         });
-
-
-//        getUseCaseHandler().execute(new GetExaminationsUseCase(), new GetExaminationsUseCase.RequestValues(0, getOculus()), new UseCase.UseCaseCallback<GetExaminationsUseCase.ResponseValue>() {
-//            @Override
-//            public void onSuccess(GetExaminationsUseCase.ResponseValue response) {
-//                mSectionedRecyclerViewAdapter.removeAllSections();
-//                ExaminationSection.OnShapshotClickListener onShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
-//                    @Override
-//                    public void onSnapshotClick(Snapshot snapshot) {
-//                        Intent intent = new Intent(getContext(), ViewSnapshotActivity.class);
-//                        startActivity(intent);
-//                    }
-//                };
-//
-//                for (Examination examination: response.getExamination()) {
-//                    ExaminationSection examinationSection = new ExaminationSection(examination.getTitle(), examination.getDate(), examination.getSnapshots());
-//                    examinationSection.setOnShapshotClickListener(onShapshotClickListener);
-//                    mSectionedRecyclerViewAdapter.addSection(examinationSection);
-//                }
-//                mSectionedRecyclerViewAdapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onError() {
-//
-//            }
-//        });
     }
 
     @Override

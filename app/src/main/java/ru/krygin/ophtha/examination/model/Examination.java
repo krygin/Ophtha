@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.realm.annotations.PrimaryKey;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 
 
 /**
@@ -11,7 +12,7 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class Examination {
-    @PrimaryKey
+
     private long UUID;
 
     private List<Snapshot> mSnapshots;

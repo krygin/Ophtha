@@ -17,7 +17,7 @@ import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.TitledFragment;
 import ru.krygin.ophtha.examination.PatientUUIDProvider;
 import ru.krygin.ophtha.examination.model.Examination;
-import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
 import ru.krygin.ophtha.patients.use_cases.GetPatientUseCase;
 

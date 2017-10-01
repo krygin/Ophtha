@@ -13,11 +13,11 @@ import javax.annotation.Nullable;
 
 import ru.krygin.ophtha.DatabaseHelper;
 import ru.krygin.ophtha.examination.db.ExaminationData;
-import ru.krygin.ophtha.examination.db.SnapshotObject;
 import ru.krygin.ophtha.examination.model.Examination;
-import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
 import ru.krygin.ophtha.patients.model.Patient;
+import ru.krygin.ophtha.snapshot.db.SnapshotData;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 
 /**
  * Created by krygin on 20.08.17.
@@ -68,7 +68,8 @@ public class PatientsRepository {
             patient.setPatronymic(input.getPatronymic());
             patient.setGender(Patient.Gender.fromBoolean(input.getGender()));
             patient.setBirthday(input.getDateOfBirth());
-//            patient.setExaminations(Lists.newArrayList(Iterables.transform(input.getExaminations(), examinationTransformer)));
+            patient.setPatientId(input.getCardNumber());
+            patient.setExaminations(Lists.newArrayList(Iterables.transform(input.getExaminations(), examinationTransformer)));
             return patient;
         }
     };
@@ -80,14 +81,15 @@ public class PatientsRepository {
             if (input == null) {
                 return null;
             }
-            PatientData patientObject = new PatientData();
-            patientObject.setUUID(input.getUUID());
-            patientObject.setFirstName(input.getFirstName());
-            patientObject.setLastName(input.getLastName());
-            patientObject.setPatronymic(input.getPatronymic());
-            patientObject.setGender(input.getGender().toBoolean());
-            patientObject.setDateOfBirth(input.getBirthday());
-            return patientObject;
+            PatientData patientData = new PatientData();
+            patientData.setUUID(input.getUUID());
+            patientData.setFirstName(input.getFirstName());
+            patientData.setLastName(input.getLastName());
+            patientData.setPatronymic(input.getPatronymic());
+            patientData.setGender(input.getGender().toBoolean());
+            patientData.setDateOfBirth(input.getBirthday());
+            patientData.setCardNumber(input.getPatientId());
+            return patientData;
         }
     };
 
@@ -104,6 +106,7 @@ public class PatientsRepository {
             examination.setComment(input.getComment());
             examination.setDiagnosis(input.getDiagnosis());
             examination.setDate(input.getDate());
+            examination.setSnapshots(Lists.newArrayList(Iterables.transform(input.getSnapshots(), snapshotTransformer)));
 
 //            Iterable<Snapshot> snapshots = Iterables.transform(input.getSnapshots(), snapshotTransformer);
 //            List<Snapshot> filteredSnapshots = Lists.newArrayList(snapshots);
@@ -129,10 +132,10 @@ public class PatientsRepository {
         }
     };
 
-    public static Function<SnapshotObject, Snapshot> snapshotTransformer = new Function<SnapshotObject, Snapshot>() {
+    public static Function<SnapshotData, Snapshot> snapshotTransformer = new Function<SnapshotData, Snapshot>() {
         @Nullable
         @Override
-        public Snapshot apply(@Nullable SnapshotObject input) {
+        public Snapshot apply(@Nullable SnapshotData input) {
             if (input == null) {
                 return null;
             }
@@ -146,20 +149,20 @@ public class PatientsRepository {
         }
     };
 
-    public static Function<Snapshot, SnapshotObject> snapshotTransformerReverse = new Function<Snapshot, SnapshotObject>() {
+    public static Function<Snapshot, SnapshotData> snapshotTransformerReverse = new Function<Snapshot, SnapshotData>() {
         @Nullable
         @Override
-        public SnapshotObject apply(@Nullable Snapshot input) {
+        public SnapshotData apply(@Nullable Snapshot input) {
             if (input == null) {
                 return null;
             }
-            SnapshotObject snapshotObject = new SnapshotObject();
-            snapshotObject.setUUID(input.getUUID());
-            snapshotObject.setFilename(input.getFilename());
-            snapshotObject.setTimestamp(input.getTimestamp());
-            snapshotObject.setComment(input.getComment());
-            snapshotObject.setOculus(input.getOculus().toBoolean());
-            return snapshotObject;
+            SnapshotData snapshotData = new SnapshotData();
+            snapshotData.setUUID(input.getUUID());
+            snapshotData.setFilename(input.getFilename());
+            snapshotData.setTimestamp(input.getTimestamp());
+            snapshotData.setComment(input.getComment());
+            snapshotData.setOculus(input.getOculus().toBoolean());
+            return snapshotData;
         }
     };
 }

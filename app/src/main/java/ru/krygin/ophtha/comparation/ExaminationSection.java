@@ -18,7 +18,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.examination.model.Examination;
-import ru.krygin.ophtha.examination.model.Snapshot;
+import ru.krygin.ophtha.snapshot.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
 
 /**

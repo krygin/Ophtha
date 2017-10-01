@@ -1,6 +1,8 @@
 package ru.krygin.ophtha.examination.db;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Date;
 import io.realm.RealmList;
 import io.realm.annotations.PrimaryKey;
 import ru.krygin.ophtha.patients.db.PatientData;
+import ru.krygin.ophtha.snapshot.db.SnapshotData;
 
 import static ru.krygin.ophtha.examination.db.ExaminationData.TABLE_NAME_EXAMINATIONS;
 import static ru.krygin.ophtha.patients.db.PatientData.TABLE_NAME_PATIENTS;
@@ -18,14 +21,13 @@ import static ru.krygin.ophtha.patients.db.PatientData.TABLE_NAME_PATIENTS;
 
 @DatabaseTable(tableName = TABLE_NAME_EXAMINATIONS)
 public class ExaminationData {
-    public static final String TABLE_NAME_EXAMINATIONS = "patients";
+    public static final String TABLE_NAME_EXAMINATIONS = "examinations";
 
     public static final String FIELD_ID = "id";
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_DATE = "date";
     public static final String FIELD_COMMENT = "comment";
     public static final String FIELD_DIAGNOSIS = "diagnosis";
-    public static final String FIELD_PATIENT = "patient";
 
     @DatabaseField(columnName = FIELD_ID, generatedId = true)
     private long UUID;
@@ -42,8 +44,11 @@ public class ExaminationData {
     @DatabaseField(columnName = FIELD_DIAGNOSIS)
     private String diagnosis;
 
-    @DatabaseField(columnName = "patient_id", foreign = true, foreignAutoRefresh = true)
+    @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private PatientData patient;
+
+    @ForeignCollectionField(eager = true)
+    public ForeignCollection<SnapshotData> snapshots;
 
     public long getUUID() {
         return UUID;
@@ -91,5 +96,13 @@ public class ExaminationData {
 
     public void setPatient(PatientData patient) {
         this.patient = patient;
+    }
+
+    public ForeignCollection<SnapshotData> getSnapshots() {
+        return snapshots;
+    }
+
+    public void setSnapshots(ForeignCollection<SnapshotData> snapshots) {
+        this.snapshots = snapshots;
     }
 }

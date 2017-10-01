@@ -35,9 +35,12 @@ public class ExaminationsRepository {
         return examination;
     }
 
-    public void createOrUpdateExamination(Examination examination) {
+    public void createOrUpdateExamination(long patientUUID, Examination examination) {
         RuntimeExceptionDao<ExaminationData, Long> examinationDataDao = mDatabaseHelper.getRuntimeExceptionDao(ExaminationData.class);
         ExaminationData examinationData = examinationTransformerReverse.apply(examination);
+        PatientData patientData = new PatientData();
+        patientData.setUUID(patientUUID);
+        examinationData.setPatient(patientData);
         examinationDataDao.createOrUpdate(examinationData);
     }
 }

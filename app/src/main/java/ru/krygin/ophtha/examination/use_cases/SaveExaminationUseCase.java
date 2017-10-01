@@ -22,7 +22,7 @@ public class SaveExaminationUseCase extends UseCase<SaveExaminationUseCase.Reque
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-        mExaminationRepository.createOrUpdateExamination(requestValues.getExamination());
+        mExaminationRepository.createOrUpdateExamination(requestValues.getPatientUUID(), requestValues.getExamination());
         getUseCaseCallback().onSuccess(new ResponseValue());
     }
 

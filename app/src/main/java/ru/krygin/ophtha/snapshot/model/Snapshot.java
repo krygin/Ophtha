@@ -1,6 +1,8 @@
-package ru.krygin.ophtha.examination.model;
+package ru.krygin.ophtha.snapshot.model;
 
 import android.net.Uri;
+
+import com.j256.ormlite.field.DatabaseField;
 
 import java.util.Date;
 
@@ -11,6 +13,7 @@ import ru.krygin.ophtha.oculus.Oculus;
  */
 
 public class Snapshot {
+
     private long UUID;
     private Date timestamp;
     private Oculus oculus;

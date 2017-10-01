@@ -8,6 +8,7 @@ import dagger.Module;
 import dagger.Provides;
 import ru.krygin.ophtha.examination.db.ExaminationsRepository;
 import ru.krygin.ophtha.patients.db.PatientsRepository;
+import ru.krygin.ophtha.snapshot.db.SnapshotsRepository;
 
 /**
  * Created by krygin on 20.08.17.
@@ -26,5 +27,11 @@ public class PatientsModule {
     @Singleton
     ExaminationsRepository provideExaminationRepository(Context context) {
         return new ExaminationsRepository(context);
+    }
+
+    @Provides
+    @Singleton
+    SnapshotsRepository provideSnapshotsRepository(Context context) {
+        return new SnapshotsRepository(context);
     }
 }

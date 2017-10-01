@@ -1,5 +1,6 @@
 package ru.krygin.ophtha.examination;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -90,7 +91,7 @@ public class ExaminationActivity extends BaseActivity implements
 
             @Override
             public void onPageSelected(int position) {
-                mFab.setOnClickListener(v -> mPresenter.addOculusSnapshot(mPagerAdapter.getOculus(position)));
+                bindOnClickListener(position);
             }
 
             @Override
@@ -98,7 +99,13 @@ public class ExaminationActivity extends BaseActivity implements
 
             }
         });
+        bindOnClickListener(0);
     }
+
+    private void bindOnClickListener(int position) {
+        mFab.setOnClickListener(v -> mPresenter.addOculusSnapshot(mPagerAdapter.getOculus(position)));
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,7 +219,9 @@ public class ExaminationActivity extends BaseActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 123:
-                mPresenter.addNewSnapshot(mPhotoUri.toString(), mPhotoTimestamp, mExaminationUUID);
+                if (resultCode == Activity.RESULT_OK) {
+                    mPresenter.addNewSnapshot(mPhotoUri.toString(), mPhotoTimestamp, mExaminationUUID);
+                }
         }
     }
 }
