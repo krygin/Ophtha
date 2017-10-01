@@ -1,9 +1,10 @@
-package ru.krygin.ophtha.patients;
+package ru.krygin.ophtha.patients.use_cases;
 
 import javax.inject.Inject;
 
 import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
+import ru.krygin.ophtha.patients.db.PatientsRepository;
 import ru.krygin.ophtha.patients.model.Patient;
 
 /**

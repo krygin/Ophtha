@@ -1,21 +1,22 @@
-package ru.krygin.ophtha.patients;
+package ru.krygin.ophtha.patients.db;
+
+import android.content.Context;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import io.realm.Realm;
-import io.realm.RealmResults;
-import ru.krygin.ophtha.examination.db.ExaminationObject;
+import ru.krygin.ophtha.DatabaseHelper;
+import ru.krygin.ophtha.examination.db.ExaminationData;
 import ru.krygin.ophtha.examination.db.SnapshotObject;
 import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
-import ru.krygin.ophtha.patients.db.PatientObject;
 import ru.krygin.ophtha.patients.model.Patient;
 
 /**
@@ -24,41 +25,39 @@ import ru.krygin.ophtha.patients.model.Patient;
 
 public class PatientsRepository {
 
+    private final DatabaseHelper mDatabaseHelper;
+
+    public PatientsRepository(Context context) {
+        mDatabaseHelper = new DatabaseHelper(context);
+    }
+
     public void createOrUpdatePatient(Patient patient) {
-        PatientObject patientObject = patientTransformerReverse.apply(patient);
-
-        Realm realm = Realm.getDefaultInstance();
-
-        realm.beginTransaction();
-
-        realm.insertOrUpdate(patientObject);
-        realm.commitTransaction();
-        realm.close();
+        RuntimeExceptionDao<PatientData, Long> patientDataDao = mDatabaseHelper.getRuntimeExceptionDao(PatientData.class);
+        PatientData patientData = patientTransformerReverse.apply(patient);
+        patientDataDao.createOrUpdate(patientData);
     }
 
 
     public List<Patient> getPatients() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<PatientObject> realmResults = realm.where(PatientObject.class).findAll();
-        Iterable<Patient> patients = Iterables.transform(realmResults, patientTransformer);
-        List<Patient> filteredPatients = Lists.newArrayList(patients);
-        realm.close();
-        return filteredPatients;
+        RuntimeExceptionDao<PatientData, Long> patientDataDao = mDatabaseHelper.getRuntimeExceptionDao(PatientData.class);
+        List<PatientData> patientDataList = patientDataDao.queryForAll();
+        Iterable<Patient> patients = Iterables.transform(patientDataList, patientTransformer);
+        return Lists.newArrayList(patients);
     }
 
     public Patient getPatient(long patientUUID) {
-        Realm realm = Realm.getDefaultInstance();
-        PatientObject patientObject = realm.where(PatientObject.class).equalTo(PatientObject.UUID_FIELD, patientUUID).findFirst();
-        Patient patient = patientTransformer.apply(patientObject);
-        realm.close();
+        RuntimeExceptionDao<PatientData, Long> patientDataDao = mDatabaseHelper.getRuntimeExceptionDao(PatientData.class);
+        PatientData patientData = patientDataDao.queryForId(patientUUID);
+        Patient patient = patientTransformer.apply(patientData);
+
         return patient;
     }
 
 
-    public static Function<PatientObject, Patient> patientTransformer = new Function<PatientObject, Patient>() {
+    public static Function<PatientData, Patient> patientTransformer = new Function<PatientData, Patient>() {
         @javax.annotation.Nullable
         @Override
-        public Patient apply(@javax.annotation.Nullable PatientObject input) {
+        public Patient apply(PatientData input) {
             if (input == null) {
                 return null;
             }
@@ -68,46 +67,34 @@ public class PatientsRepository {
             patient.setFirstName(input.getFirstName());
             patient.setPatronymic(input.getPatronymic());
             patient.setGender(Patient.Gender.fromBoolean(input.getGender()));
-            patient.setPatientId(input.getPatientId());
-            patient.setBirthday(input.getBirthday());
-
-            Iterable<Examination> examinations = Iterables.transform(input.getExaminations(), examinationTransformer);
-            List<Examination> filteredExaminations = Lists.newArrayList(examinations);
-            patient.setExaminations(filteredExaminations);
+            patient.setBirthday(input.getDateOfBirth());
+//            patient.setExaminations(Lists.newArrayList(Iterables.transform(input.getExaminations(), examinationTransformer)));
             return patient;
         }
     };
 
-    public static Function<Patient, PatientObject> patientTransformerReverse = new Function<Patient, PatientObject>() {
+    public static Function<Patient, PatientData> patientTransformerReverse = new Function<Patient, PatientData>() {
         @Nullable
         @Override
-        public PatientObject apply(@Nullable Patient input) {
+        public PatientData apply(@Nullable Patient input) {
             if (input == null) {
                 return null;
             }
-            PatientObject patientObject = new PatientObject();
+            PatientData patientObject = new PatientData();
             patientObject.setUUID(input.getUUID());
             patientObject.setFirstName(input.getFirstName());
             patientObject.setLastName(input.getLastName());
             patientObject.setPatronymic(input.getPatronymic());
             patientObject.setGender(input.getGender().toBoolean());
-            patientObject.setPatientId(input.getPatientId());
-            patientObject.setBirthday(input.getBirthday());
-
-            List<Examination> examinations = input.getExaminations();
-            if (examinations != null) {
-                Iterable<ExaminationObject> examinationObjects = Iterables.transform(input.getExaminations(), examinationTransformerReverse);
-                List<ExaminationObject> filteredExaminationObjects = Lists.newArrayList(examinationObjects);
-                patientObject.getExaminations().addAll(filteredExaminationObjects);
-            }
+            patientObject.setDateOfBirth(input.getBirthday());
             return patientObject;
         }
     };
 
-    public static Function<ExaminationObject, Examination> examinationTransformer = new Function<ExaminationObject, Examination>() {
+    public static Function<ExaminationData, Examination> examinationTransformer = new Function<ExaminationData, Examination>() {
         @Nullable
         @Override
-        public Examination apply(@Nullable ExaminationObject input) {
+        public Examination apply(@Nullable ExaminationData input) {
             if (input == null) {
                 return null;
             }
@@ -118,32 +105,26 @@ public class PatientsRepository {
             examination.setDiagnosis(input.getDiagnosis());
             examination.setDate(input.getDate());
 
-            Iterable<Snapshot> snapshots = Iterables.transform(input.getSnapshots(), snapshotTransformer);
-            List<Snapshot> filteredSnapshots = Lists.newArrayList(snapshots);
-            examination.setSnapshots(filteredSnapshots);
+//            Iterable<Snapshot> snapshots = Iterables.transform(input.getSnapshots(), snapshotTransformer);
+//            List<Snapshot> filteredSnapshots = Lists.newArrayList(snapshots);
+//            examination.setSnapshots(filteredSnapshots);
             return examination;
         }
     };
 
-    public static Function<Examination, ExaminationObject> examinationTransformerReverse = new Function<Examination, ExaminationObject>() {
+    public static Function<Examination, ExaminationData> examinationTransformerReverse = new Function<Examination, ExaminationData>() {
         @Nullable
         @Override
-        public ExaminationObject apply(@Nullable Examination input) {
+        public ExaminationData apply(@Nullable Examination input) {
             if (input == null) {
                 return null;
             }
-            ExaminationObject examinationObject = new ExaminationObject();
+            ExaminationData examinationObject = new ExaminationData();
             examinationObject.setUUID(input.getUUID());
             examinationObject.setTitle(input.getTitle());
             examinationObject.setComment(input.getComment());
             examinationObject.setDiagnosis(input.getDiagnosis());
             examinationObject.setDate(input.getDate());
-            List<Snapshot> snapshots = input.getSnapshots();
-            if (snapshots != null) {
-                Iterable<SnapshotObject> snapshotObjects = Iterables.transform(input.getSnapshots(), snapshotTransformerReverse);
-                List<SnapshotObject> filteredSnapshotObjects = Lists.newArrayList(snapshotObjects);
-                examinationObject.getSnapshots().addAll(filteredSnapshotObjects);
-            }
             return examinationObject;
         }
     };

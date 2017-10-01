@@ -13,7 +13,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.ui.BaseFragment;
-import ru.krygin.ophtha.examination.GetExaminationsUseCase;
 import ru.krygin.ophtha.examination.model.Snapshot;
 
 /**

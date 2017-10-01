@@ -19,7 +19,7 @@ import ru.krygin.ophtha.examination.PatientUUIDProvider;
 import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
-import ru.krygin.ophtha.patients.GetPatientUseCase;
+import ru.krygin.ophtha.patients.use_cases.GetPatientUseCase;
 
 /**
  * Created by krygin on 06.08.17.

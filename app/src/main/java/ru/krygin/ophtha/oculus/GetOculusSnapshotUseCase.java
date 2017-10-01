@@ -4,7 +4,7 @@ import io.realm.Realm;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.examination.db.SnapshotObject;
 import ru.krygin.ophtha.examination.model.Snapshot;
-import ru.krygin.ophtha.patients.PatientsRepository;
+import ru.krygin.ophtha.patients.db.PatientsRepository;
 
 /**
  * Created by krygin on 13.09.17.

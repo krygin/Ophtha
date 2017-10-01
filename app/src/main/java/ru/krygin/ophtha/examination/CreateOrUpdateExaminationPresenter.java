@@ -2,7 +2,6 @@ package ru.krygin.ophtha.examination;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.google.common.collect.Iterables;
 
 import java.util.Date;
 
@@ -12,8 +11,8 @@ import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.async.UseCaseHandler;
 import ru.krygin.ophtha.examination.model.Examination;
-import ru.krygin.ophtha.patients.GetPatientUseCase;
-import ru.krygin.ophtha.patients.model.Patient;
+import ru.krygin.ophtha.examination.use_cases.GetExaminationsUseCase;
+import ru.krygin.ophtha.examination.use_cases.SaveExaminationUseCase;
 
 /**
  * Created by krygin on 13.09.17.

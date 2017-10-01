@@ -1,7 +1,5 @@
 package ru.krygin.ophtha.core.async;
 
-import ru.krygin.ophtha.patients.GetPatientsUseCase;
-
 /**
  * Runs {@link UseCase}s using a {@link UseCaseScheduler}.
  */

@@ -19,7 +19,7 @@ import ru.krygin.ophtha.core.ui.TitledFragment;
 import ru.krygin.ophtha.examination.model.Examination;
 import ru.krygin.ophtha.examination.model.Snapshot;
 import ru.krygin.ophtha.oculus.Oculus;
-import ru.krygin.ophtha.patients.GetPatientUseCase;
+import ru.krygin.ophtha.patients.use_cases.GetPatientUseCase;
 import ru.krygin.ophtha.patients.model.Patient;
 import ru.krygin.ophtha.snapshot.ViewSnapshotActivity;
 
@@ -129,7 +129,7 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
 //                    }
 //                };
 //
-//                for (Examination examination: response.getExaminations()) {
+//                for (Examination examination: response.getExamination()) {
 //                    ExaminationSection examinationSection = new ExaminationSection(examination.getTitle(), examination.getDate(), examination.getSnapshots());
 //                    examinationSection.setOnShapshotClickListener(onShapshotClickListener);
 //                    mSectionedRecyclerViewAdapter.addSection(examinationSection);

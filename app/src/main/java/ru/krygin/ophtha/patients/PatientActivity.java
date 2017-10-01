@@ -22,10 +22,10 @@ import ru.krygin.ophtha.comparation.ExaminationComparisionActivity;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.BaseActivity;
 import ru.krygin.ophtha.examination.CreateOrUpdateExaminationActivity;
-import ru.krygin.ophtha.examination.ExaminationActivity;
 import ru.krygin.ophtha.examination.ExaminationsPerOculusPagerAdapter;
 import ru.krygin.ophtha.examination.PatientUUIDProvider;
 import ru.krygin.ophtha.patients.model.Patient;
+import ru.krygin.ophtha.patients.use_cases.GetPatientUseCase;
 
 /**
  * Created by krygin on 05.08.17.

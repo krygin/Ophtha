@@ -1,10 +1,11 @@
-package ru.krygin.ophtha.examination;
+package ru.krygin.ophtha.examination.use_cases;
 
-import io.realm.Realm;
+import javax.inject.Inject;
+
+import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
-import ru.krygin.ophtha.examination.db.ExaminationObject;
+import ru.krygin.ophtha.examination.db.ExaminationsRepository;
 import ru.krygin.ophtha.examination.model.Examination;
-import ru.krygin.ophtha.patients.PatientsRepository;
 
 /**
  * Created by krygin on 11.09.17.
@@ -12,20 +13,16 @@ import ru.krygin.ophtha.patients.PatientsRepository;
 
 public class SaveExaminationUseCase extends UseCase<SaveExaminationUseCase.RequestValues, SaveExaminationUseCase.ResponseValue> {
 
+    @Inject
+    ExaminationsRepository mExaminationRepository;
+
+    public SaveExaminationUseCase() {
+        Injector.getAppComponent().inject(this);
+    }
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-
-        ExaminationObject examinationObject = PatientsRepository.examinationTransformerReverse.apply(requestValues.getExamination());
-
-        Realm realm = Realm.getDefaultInstance();
-
-        realm.beginTransaction();
-
-        realm.insertOrUpdate(examinationObject);
-        realm.commitTransaction();
-        realm.close();
-
+        mExaminationRepository.createOrUpdateExamination(requestValues.getExamination());
         getUseCaseCallback().onSuccess(new ResponseValue());
     }
 

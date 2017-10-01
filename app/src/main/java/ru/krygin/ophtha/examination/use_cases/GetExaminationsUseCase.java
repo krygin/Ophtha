@@ -1,19 +1,25 @@
-package ru.krygin.ophtha.examination;
+package ru.krygin.ophtha.examination.use_cases;
 
-import java.util.List;
+import javax.inject.Inject;
 
-import io.realm.Realm;
+import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
-import ru.krygin.ophtha.examination.db.ExaminationObject;
+import ru.krygin.ophtha.examination.db.ExaminationsRepository;
 import ru.krygin.ophtha.examination.model.Examination;
-import ru.krygin.ophtha.oculus.Oculus;
-import ru.krygin.ophtha.patients.PatientsRepository;
 
 /**
  * Created by krygin on 06.08.17.
  */
 
 public class GetExaminationsUseCase extends UseCase<GetExaminationsUseCase.RequestValues, GetExaminationsUseCase.ResponseValue> {
+
+
+    @Inject
+    ExaminationsRepository mExaminationsRepository;
+
+    public GetExaminationsUseCase() {
+        Injector.getAppComponent().inject(this);
+    }
 
     public static class RequestValues implements UseCase.RequestValues {
 
@@ -23,17 +29,15 @@ public class GetExaminationsUseCase extends UseCase<GetExaminationsUseCase.Reque
             mExaminationUUID = examinationUUID;
         }
 
-        public long getExaminationUUID() {
+        public long getExaminationId() {
             return mExaminationUUID;
         }
     }
 
     @Override
     protected void executeUseCase(RequestValues requestValues) {
-        Realm realm = Realm.getDefaultInstance();
-        ExaminationObject examinationObject = realm.where(ExaminationObject.class).equalTo("UUID", requestValues.getExaminationUUID()).findFirst();
-        Examination examination = PatientsRepository.examinationTransformer.apply(examinationObject);
-        ResponseValue responseValue = new ResponseValue(examination);
+        Examination examinations = mExaminationsRepository.getExamination(requestValues.getExaminationId());
+        GetExaminationsUseCase.ResponseValue responseValue = new GetExaminationsUseCase.ResponseValue(examinations);
         getUseCaseCallback().onSuccess(responseValue);
     }
 

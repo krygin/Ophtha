@@ -7,11 +7,13 @@ import ru.krygin.ophtha.core.ui.BaseActivity;
 import ru.krygin.ophtha.core.ui.BaseFragment;
 import ru.krygin.ophtha.examination.CreateOrUpdateExaminationPresenter;
 import ru.krygin.ophtha.examination.ExaminationActivityPresenter;
+import ru.krygin.ophtha.examination.use_cases.GetExaminationsUseCase;
+import ru.krygin.ophtha.examination.use_cases.SaveExaminationUseCase;
 import ru.krygin.ophtha.patients.CreateOrUpdatePatientPresenter;
-import ru.krygin.ophtha.patients.GetPatientUseCase;
-import ru.krygin.ophtha.patients.GetPatientsUseCase;
+import ru.krygin.ophtha.patients.use_cases.GetPatientUseCase;
+import ru.krygin.ophtha.patients.use_cases.GetPatientsUseCase;
 import ru.krygin.ophtha.patients.PatientsModule;
-import ru.krygin.ophtha.patients.SavePatientUseCase;
+import ru.krygin.ophtha.patients.use_cases.SavePatientUseCase;
 
 /**
  * Created by krygin on 02.08.17.
@@ -39,4 +41,8 @@ public interface OphthaAppComponent {
     void inject(ExaminationActivityPresenter examinationPresenter);
 
     void inject(CreateOrUpdateExaminationPresenter createOrUpdateExaminationPresenter);
+
+    void inject(GetExaminationsUseCase getExaminationsUseCase);
+
+    void inject(SaveExaminationUseCase saveExaminationUseCase);
 }

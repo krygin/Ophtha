@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.ui.TitledFragment;
+import ru.krygin.ophtha.examination.use_cases.GetExaminationsUseCase;
 import ru.krygin.ophtha.oculus.Oculus;
 
 /**

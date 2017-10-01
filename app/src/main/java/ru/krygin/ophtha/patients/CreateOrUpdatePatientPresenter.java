@@ -11,6 +11,8 @@ import ru.krygin.ophtha.core.Injector;
 import ru.krygin.ophtha.core.async.UseCase;
 import ru.krygin.ophtha.core.async.UseCaseHandler;
 import ru.krygin.ophtha.patients.model.Patient;
+import ru.krygin.ophtha.patients.use_cases.GetPatientUseCase;
+import ru.krygin.ophtha.patients.use_cases.SavePatientUseCase;
 
 /**
  * Created by krygin on 20.08.17.

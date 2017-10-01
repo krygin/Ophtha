@@ -14,6 +14,7 @@ import butterknife.OnClick;
 import ru.krygin.ophtha.core.ui.BaseActivity;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.async.UseCase;
+import ru.krygin.ophtha.patients.use_cases.GetPatientsUseCase;
 
 public class PatientsActivity extends BaseActivity {
 
