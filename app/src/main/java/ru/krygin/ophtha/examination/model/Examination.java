@@ -3,7 +3,6 @@ package ru.krygin.ophtha.examination.model;
 import java.util.Date;
 import java.util.List;
 
-import io.realm.annotations.PrimaryKey;
 import ru.krygin.ophtha.snapshot.model.Snapshot;
 
 

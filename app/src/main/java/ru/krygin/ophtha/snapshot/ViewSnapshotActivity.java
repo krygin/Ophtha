@@ -1,6 +1,7 @@
 package ru.krygin.ophtha.snapshot;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
@@ -9,12 +10,17 @@ import android.os.Environment;
 import android.print.PrintAttributes;
 import android.print.pdf.PrintedPdfDocument;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +30,7 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.relex.photodraweeview.PhotoDraweeView;
 import ru.krygin.ophtha.R;
 import ru.krygin.ophtha.core.ui.BaseActivity;
@@ -43,13 +50,34 @@ public class ViewSnapshotActivity extends BaseActivity {
     @BindView(R.id.oculus_comment_text_view)
     TextView mOculusCommentTextView;
 
+    @BindView(R.id.edit_oculus_snapshot_comment_button)
+    ImageButton mEditOculusSnapshotCommentButton;
+
+    private BottomSheetBehavior<View> mBottomSheetBehavior;
+
+    @OnClick(R.id.edit_oculus_snapshot_comment_button)
+    void onClick(View view) {
+        if (mOculusCommentTextView.isEnabled()) {
+            mEditOculusSnapshotCommentButton.setImageResource(R.drawable.ic_edit_black_24dp);
+            mOculusCommentTextView.setEnabled(false);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        } else {
+            mEditOculusSnapshotCommentButton.setImageResource(R.drawable.ic_check_white_24dp);
+            mOculusCommentTextView.setEnabled(true);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+    }
+
+    @BindView(R.id.bottom_sheet)
+    View mBottomSheet;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_snapshot);
         ButterKnife.bind(this);
-
         setSupportActionBar(mToolbar);
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
     }
 
     @Override

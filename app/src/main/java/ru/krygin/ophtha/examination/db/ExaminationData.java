@@ -7,13 +7,10 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.Date;
 
-import io.realm.RealmList;
-import io.realm.annotations.PrimaryKey;
 import ru.krygin.ophtha.patients.db.PatientData;
 import ru.krygin.ophtha.snapshot.db.SnapshotData;
 
 import static ru.krygin.ophtha.examination.db.ExaminationData.TABLE_NAME_EXAMINATIONS;
-import static ru.krygin.ophtha.patients.db.PatientData.TABLE_NAME_PATIENTS;
 
 /**
  * Created by Ivan on 01.10.2017.
