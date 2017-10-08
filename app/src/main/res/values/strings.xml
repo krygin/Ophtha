@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ophtha</string>
+    <string name="app_name">Smart Sight</string>
     <string name="title_activity_patients">PatientsActivity</string>
     <string name="oculus_dexter">OD</string>
     <string name="oculus_sinister">OS</string>
