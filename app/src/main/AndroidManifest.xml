@@ -2,13 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.krygin.smart_sight">
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
+    <uses-feature android:name="android.hardware.camera2.full" />
 
     <application
         android:name="ru.krygin.smart_sight.OphthaApplication"
@@ -22,9 +21,9 @@
             android:name="ru.krygin.smart_sight.patients.PatientsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+            <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="ru.krygin.smart_sight.patients.PatientActivity" />
@@ -32,7 +31,14 @@
         <activity android:name="ru.krygin.smart_sight.comparation.ExaminationComparisionActivity" />
         <activity android:name="ru.krygin.smart_sight.patients.CreateOrUpdatePatientActivity" />
         <activity android:name="ru.krygin.smart_sight.examination.ExaminationActivity" />
-        <activity android:name="ru.krygin.smart_sight.examination.CreateOrUpdateExaminationActivity"/>
+        <activity android:name="ru.krygin.smart_sight.examination.CreateOrUpdateExaminationActivity" />
+
+        <activity android:name=".camera.TakePhotoActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
