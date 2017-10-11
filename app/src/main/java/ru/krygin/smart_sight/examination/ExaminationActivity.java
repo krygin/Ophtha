@@ -27,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.krygin.smart_sight.DateTimeUtils;
 import ru.krygin.smart_sight.R;
+import ru.krygin.smart_sight.camera.TakePhotoActivity;
 import ru.krygin.smart_sight.core.ui.BaseActivity;
 import ru.krygin.smart_sight.examination.model.Examination;
 import ru.krygin.smart_sight.oculus.Oculus;
@@ -189,25 +190,27 @@ public class ExaminationActivity extends BaseActivity implements
 
     @Override
     public void requestNewSnapshot(Oculus oculus) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        ComponentName componentName = takePictureIntent.resolveActivity(getPackageManager());
-        if (componentName != null) {
-            // Create the File where the photo should go
-            File photoFolder = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "smart_sight_snapshots");
-            if (!photoFolder.exists()) {
-                photoFolder.mkdirs();
-            }
-            mPhotoTimestamp = System.currentTimeMillis();
-            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", mPhotoTimestamp, Oculus.DEXTER.name()));
-            // Continue only if the File was successfully created
-            mPhotoUri = FileProvider.getUriForFile(this,
-                    "ru.krygin.smart_sight.fileprovider",
-                    photoFile);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-            takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivityForResult(takePictureIntent, 123);
-        }
+        Intent intent = TakePhotoActivity.newIntent(this, mExaminationUUID, oculus);
+        startActivity(intent);
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        // Ensure that there's a camera activity to handle the intent
+//        ComponentName componentName = takePictureIntent.resolveActivity(getPackageManager());
+//        if (componentName != null) {
+//            // Create the File where the photo should go
+//            File photoFolder = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "smart_sight_snapshots");
+//            if (!photoFolder.exists()) {
+//                photoFolder.mkdirs();
+//            }
+//            mPhotoTimestamp = System.currentTimeMillis();
+//            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", mPhotoTimestamp, Oculus.DEXTER.name()));
+//            // Continue only if the File was successfully created
+//            mPhotoUri = FileProvider.getUriForFile(this,
+//                    "ru.krygin.smart_sight.fileprovider",
+//                    photoFile);
+//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
+//            takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            startActivityForResult(takePictureIntent, 123);
+//        }
     }
 
     @Override
