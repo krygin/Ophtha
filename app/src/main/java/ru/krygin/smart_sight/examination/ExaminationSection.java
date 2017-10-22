@@ -1,11 +1,16 @@
 package ru.krygin.smart_sight.examination;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.BytesRange;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -57,7 +62,13 @@ public class ExaminationSection extends StatelessSection {
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         Snapshot snapshot = getFilteredByOculusSnapshots(mExamination.getSnapshots()).get(position);
-        itemViewHolder.imageView.setImageURI(snapshot.getFilename());
+        itemViewHolder.imageView.setController(
+                Fresco.newDraweeControllerBuilder().setImageRequest(
+                        ImageRequestBuilder
+                                .newBuilderWithSource(Uri.parse(snapshot.getFilename()))
+                                .build())
+                        .build());
+
         itemViewHolder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +88,7 @@ public class ExaminationSection extends StatelessSection {
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        headerViewHolder.oculusExaminationTitleTextView.setText(mExamination.getTitle());
+        headerViewHolder.oculusExaminationTitleTextView.setText(Examination.Type.values()[mExamination.getType()].toString());
         headerViewHolder.oculusExaminationDateTextView.setText(DateFormat.getDateInstance().format(mExamination.getDate()));
         headerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

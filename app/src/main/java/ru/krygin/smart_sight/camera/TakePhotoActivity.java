@@ -1,12 +1,16 @@
 package ru.krygin.smart_sight.camera;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -90,8 +94,8 @@ public class TakePhotoActivity extends BaseActivity {
                         }
 
                         Uri photoUri = FileProvider.getUriForFile(TakePhotoActivity.this,
-                    "ru.krygin.smart_sight.fileprovider",
-                    photoFile);
+                                "ru.krygin.smart_sight.fileprovider",
+                                photoFile);
 
                         Snapshot snapshot = new Snapshot();
                         snapshot.setUUID(photoTimestamp);
@@ -117,7 +121,24 @@ public class TakePhotoActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mCameraView.start();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        } else {
+            mCameraView.start();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    finish();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override

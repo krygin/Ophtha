@@ -15,14 +15,13 @@ public class Examination {
     private long UUID;
 
     private List<Snapshot> mSnapshots;
-    private String title;
+    private int mType;
     private Date mDate;
-    private String comment;
-    private String diagnosis;
+    private String mComment;
 
 
-    public String getTitle() {
-        return title;
+    public int getType() {
+        return mType;
     }
 
     public Date getDate() {
@@ -45,8 +44,8 @@ public class Examination {
         this.UUID = UUID;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setType(int title) {
+        this.mType = title;
     }
 
     public void setDate(Date date) {
@@ -54,18 +53,28 @@ public class Examination {
     }
 
     public String getComment() {
-        return comment;
-    }
-
-    public String getDiagnosis() {
-        return diagnosis;
+        return mComment;
     }
 
     public void setComment(String comment) {
-        this.comment = comment;
+        this.mComment = comment;
     }
 
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
+    public enum Type {
+        UNDEFINDED("Тип исследования"),
+        OCULAR_FUNDUS("Фоторегистрация глазного дна"),
+        SEGMENT_ANTERIOR("Фоторегистрация переднего отрезка");
+
+        private final String mExaminationType;
+
+        Type(String examinationType) {
+            mExaminationType = examinationType;
+        }
+
+        @Override
+        public String toString() {
+            return mExaminationType;
+        }
     }
+
 }

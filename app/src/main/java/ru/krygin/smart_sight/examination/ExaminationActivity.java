@@ -59,9 +59,6 @@ public class ExaminationActivity extends BaseActivity implements
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.diagnosis_text_view)
-    TextView mDiagnosisTextView;
-
     @BindView(R.id.comment_text_view)
     TextView mCommentTextView;
 
@@ -181,10 +178,9 @@ public class ExaminationActivity extends BaseActivity implements
 
     @Override
     public void showExamination(Examination examination) {
-        getSupportActionBar().setTitle(examination.getTitle());
+        getSupportActionBar().setTitle(Examination.Type.values()[examination.getType()].toString());
         getSupportActionBar().setSubtitle(DateTimeUtils.getDateString(examination.getDate()));
 
-        mDiagnosisTextView.setText(examination.getDiagnosis());
         mCommentTextView.setText(examination.getComment());
     }
 

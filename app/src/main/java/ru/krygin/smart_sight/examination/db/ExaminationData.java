@@ -21,15 +21,15 @@ public class ExaminationData {
     public static final String TABLE_NAME_EXAMINATIONS = "examinations";
 
     public static final String FIELD_ID = "id";
-    public static final String FIELD_TITLE = "title";
+    public static final String FIELD_TYPE = "type";
     public static final String FIELD_DATE = "date";
     public static final String FIELD_COMMENT = "comment";
 
     @DatabaseField(columnName = FIELD_ID, generatedId = true)
     private long UUID;
 
-    @DatabaseField(columnName = FIELD_TITLE)
-    private String title;
+    @DatabaseField(columnName = FIELD_TYPE)
+    private int type;
 
     @DatabaseField(columnName = FIELD_DATE)
     private Date date;
@@ -51,12 +51,12 @@ public class ExaminationData {
         this.UUID = UUID;
     }
 
-    public String getTitle() {
-        return title;
+    public int getType() {
+        return type;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setType(int type) {
+        this.type = type;
     }
 
     public Date getDate() {

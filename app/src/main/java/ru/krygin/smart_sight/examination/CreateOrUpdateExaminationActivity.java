@@ -10,15 +10,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.krygin.materialspinner.MaterialSpinner;
 import ru.krygin.smart_sight.DateTimeUtils;
 import ru.krygin.smart_sight.R;
 import ru.krygin.smart_sight.core.ui.BaseActivity;
@@ -36,14 +39,11 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @BindView(R.id.title_text_input_layout)
-    TextInputLayout mTitleTextInputLayout;
+    @BindView(R.id.examination_type_spinner)
+    MaterialSpinner mExaminationTypeSpinner;
 
     @BindView(R.id.date_text_input_layout)
     TextInputLayout mDateTextInputLayout;
-
-    @BindView(R.id.diagnosis_text_input_layout)
-    TextInputLayout mDiagnosisTextInputLayout;
 
     @BindView(R.id.comment_text_input_layout)
     TextInputLayout mCommentTextInputLayout;
@@ -77,6 +77,15 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
         mPatientUUID = getIntent().getLongExtra(EXTRA_PATIENT_UUID, 0);
         getSupportActionBar().setTitle(mExaminationUUID == 0 ? "Новое обследование" : "Редактирование обследования");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ArrayAdapter spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, Arrays.asList(Examination.Type.OCULAR_FUNDUS, Examination.Type.SEGMENT_ANTERIOR));
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+//                R.array.genders, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        mExaminationTypeSpinner.setHint(Examination.Type.UNDEFINDED);
+        mExaminationTypeSpinner.setAdapter(spinnerAdapter);
 
         mDateTextInputLayout.getEditText().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,9 +123,8 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
                 return true;
             case R.id.action_save:
                 mPresenter.saveExamination(mPatientUUID,
-                        mTitleTextInputLayout.getEditText().getText().toString(),
+                        (Examination.Type)mExaminationTypeSpinner.getSelectedItem(),
                         ((Calendar) mDateTextInputLayout.getEditText().getTag()).getTime(),
-                        mDiagnosisTextInputLayout.getEditText().getText().toString(),
                         mCommentTextInputLayout.getEditText().getText().toString()
                 );
                 return true;
@@ -133,11 +141,10 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
 
     @Override
     public void showExamination(Examination examination) {
-        mTitleTextInputLayout.getEditText().setText(examination.getTitle());
+        mExaminationTypeSpinner.setSelection(examination.getType());
         Calendar calendar = DateTimeUtils.getCalendar(examination.getDate());
         mDateTextInputLayout.getEditText().setText(DateTimeUtils.getDateString(calendar));
         mDateTextInputLayout.getEditText().setTag(calendar);
-        mDiagnosisTextInputLayout.getEditText().setText(examination.getDiagnosis());
         mCommentTextInputLayout.getEditText().setText(examination.getComment());
     }
 

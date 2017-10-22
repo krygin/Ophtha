@@ -104,7 +104,7 @@ public class PatientsRepository {
             }
             Examination examination = new Examination();
             examination.setUUID(input.getUUID());
-            examination.setTitle(input.getTitle());
+            examination.setType(input.getType());
             examination.setComment(input.getComment());
             examination.setDate(input.getDate());
             examination.setSnapshots(Lists.newArrayList(Iterables.transform(input.getSnapshots(), snapshotTransformer)));
@@ -125,7 +125,7 @@ public class PatientsRepository {
             }
             ExaminationData examinationObject = new ExaminationData();
             examinationObject.setUUID(input.getUUID());
-            examinationObject.setTitle(input.getTitle());
+            examinationObject.setType(input.getType());
             examinationObject.setComment(input.getComment());
             examinationObject.setDate(input.getDate());
             return examinationObject;

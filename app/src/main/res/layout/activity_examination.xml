@@ -29,13 +29,6 @@
                 android:layout_gravity="bottom">
 
                 <TextView
-                    android:id="@+id/diagnosis_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    tools:text="Миопия" />
-
-                <TextView
                     android:id="@+id/comment_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

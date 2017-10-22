@@ -50,14 +50,13 @@ public class CreateOrUpdateExaminationPresenter extends MvpPresenter<CreateOrUpd
 
     }
 
-    void saveExamination(long patientUUID, String title, Date date, String diagnosis, String comment) {
+    void saveExamination(long patientUUID, Examination.Type type, Date date, String comment) {
         if (mExamination == null) {
             mExamination = new Examination();
             mExamination.setUUID(System.currentTimeMillis());
         }
-        mExamination.setTitle(title);
+        mExamination.setType(type.ordinal());
         mExamination.setDate(date);
-        mExamination.setDiagnosis(diagnosis);
         mExamination.setComment(comment);
 
         SaveExaminationUseCase.RequestValues requestValues = new SaveExaminationUseCase.RequestValues(patientUUID, mExamination);
