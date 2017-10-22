@@ -55,6 +55,9 @@ public class PatientActivity extends BaseActivity implements PatientUUIDProvider
     @BindView(R.id.patient_id_text_view)
     TextView mPatientIdTextView;
 
+    @BindView(R.id.patient_diagnosis_text_view)
+    TextView mPatientDiagnosisTextView;
+
     private ExaminationsPerOculusPagerAdapter mExaminationPerOculusPagerAdapter;
     private long mPatientUUID;
 
@@ -84,6 +87,7 @@ public class PatientActivity extends BaseActivity implements PatientUUIDProvider
                 mPatientNameTextView.setText(String.format("%s %s %s", patient.getLastName(), patient.getFirstName(), patient.getPatronymic()));
                 mPatientBirthdayTextView.setText(DateTimeUtils.getDateString(patient.getBirthday()));
                 mPatientIdTextView.setText(patient.getPatientId());
+                mPatientDiagnosisTextView.setText(patient.getDiagnosis());
             }
 
             @Override

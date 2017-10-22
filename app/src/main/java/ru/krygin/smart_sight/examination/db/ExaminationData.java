@@ -24,7 +24,6 @@ public class ExaminationData {
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_DATE = "date";
     public static final String FIELD_COMMENT = "comment";
-    public static final String FIELD_DIAGNOSIS = "diagnosis";
 
     @DatabaseField(columnName = FIELD_ID, generatedId = true)
     private long UUID;
@@ -37,9 +36,6 @@ public class ExaminationData {
 
     @DatabaseField(columnName = FIELD_COMMENT)
     private String comment;
-
-    @DatabaseField(columnName = FIELD_DIAGNOSIS)
-    private String diagnosis;
 
     @DatabaseField(foreign = true, foreignAutoRefresh = true)
     private PatientData patient;
@@ -77,14 +73,6 @@ public class ExaminationData {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public String getDiagnosis() {
-        return diagnosis;
-    }
-
-    public void setDiagnosis(String diagnosis) {
-        this.diagnosis = diagnosis;
     }
 
     public PatientData getPatient() {

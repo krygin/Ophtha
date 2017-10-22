@@ -10,10 +10,10 @@
     <uses-feature android:name="android.hardware.camera2.full" />
 
     <application
-        android:name="ru.krygin.smart_sight.OphthaApplication"
-        android:allowBackup="true"
+        android:name="ru.krygin.smart_sight.SmartSightApplication"
         android:icon="@drawable/ic_smart_sight"
         android:label="@string/app_name"
+        android:allowBackup="false"
         android:roundIcon="@drawable/ic_smart_sight"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

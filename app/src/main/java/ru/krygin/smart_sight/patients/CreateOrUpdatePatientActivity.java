@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +64,9 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
 
     @BindView(R.id.patient_id_text_input_layout)
     TextInputLayout mPatientIdTextInputLayout;
+
+    @BindView(R.id.patient_diagnosis_text_input_layout)
+    TextInputLayout mDiagnosisTextInputLayout;
 
     private long mPatientUUID;
 
@@ -136,18 +140,61 @@ public class CreateOrUpdatePatientActivity extends BaseActivity implements Patie
                 finish();
                 return true;
             case R.id.action_save:
-                mPresenter.savePatient(
-                        mFirstNameTextInputLayout.getEditText().getText().toString(),
-                        mLastNameTextInputLayout.getEditText().getText().toString(),
-                        mPatronymicTextInputLayout.getEditText().getText().toString(),
-                        (Patient.Gender) mGenderSpinner.getSelectedItem(),
-                        mPatientIdTextInputLayout.getEditText().getText().toString(),
-                        ((Calendar) mPatientBirthdayTextInputLayout.getEditText().getTag()).getTime()
-                );
-                return true;
+                if (checkDataIsValid()) {
+                    mPresenter.savePatient(
+                            mFirstNameTextInputLayout.getEditText().getText().toString(),
+                            mLastNameTextInputLayout.getEditText().getText().toString(),
+                            mPatronymicTextInputLayout.getEditText().getText().toString(),
+                            (Patient.Gender) mGenderSpinner.getSelectedItem(),
+                            mPatientIdTextInputLayout.getEditText().getText().toString(),
+                            ((Calendar) mPatientBirthdayTextInputLayout.getEditText().getTag()).getTime(),
+                            mDiagnosisTextInputLayout.getEditText().getText().toString()
+                    );
+                    return true;
+                } else return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean checkDataIsValid() {
+        boolean result = true;
+        if (TextUtils.isEmpty(mFirstNameTextInputLayout.getEditText().getText().toString())) {
+            mFirstNameTextInputLayout.setError(getString(R.string.field_required));
+            result = false;
+        }
+
+        if (TextUtils.isEmpty(mLastNameTextInputLayout.getEditText().getText().toString())) {
+            mLastNameTextInputLayout.setError(getString(R.string.field_required));
+            result = false;
+        }
+
+        if (TextUtils.isEmpty(mPatronymicTextInputLayout.getEditText().getText().toString())) {
+            mPatronymicTextInputLayout.setError(getString(R.string.field_required));
+            result = false;
+        }
+
+        if (mGenderSpinner.getSelectedItem().equals(Patient.Gender.UNDEFINDED)) {
+            mGenderSpinner.setError(getString(R.string.field_required));
+            result = false;
+        }
+
+        if (TextUtils.isEmpty(mPatientIdTextInputLayout.getEditText().getText().toString())) {
+            mPatientIdTextInputLayout.setError(getString(R.string.field_required));
+            result = false;
+        }
+
+        if (mPatientBirthdayTextInputLayout.getEditText().getTag() == null) {
+            mPatientBirthdayTextInputLayout.setError(getString(R.string.field_required));
+            result = false;
+        }
+
+        if (TextUtils.isEmpty(mDiagnosisTextInputLayout.getEditText().getText().toString())) {
+            mDiagnosisTextInputLayout.setError(getString(R.string.field_required));
+            result = false;
+        }
+
+        return result;
     }
 
     @Override

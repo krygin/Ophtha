@@ -31,7 +31,7 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
     }
 
 
-    public void savePatient(String lastName, String firstName, String patronymic, Patient.Gender gender, String patientId, Date birthday) {
+    public void savePatient(String lastName, String firstName, String patronymic, Patient.Gender gender, String patientId, Date birthday, String diagnosis) {
         if (mPatient == null) {
             mPatient = new Patient();
             mPatient.setUUID(System.currentTimeMillis());
@@ -42,6 +42,7 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
         mPatient.setGender(gender);
         mPatient.setPatientId(patientId);
         mPatient.setBirthday(birthday);
+        mPatient.setDiagnosis(diagnosis);
 
         SavePatientUseCase.RequestValues requestValues = new SavePatientUseCase.RequestValues(mPatient);
 

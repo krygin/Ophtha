@@ -27,7 +27,7 @@ import ru.krygin.smart_sight.snapshot.use_cases.SaveSnapshotUseCase;
         FileModule.class,
         PatientsModule.class
 })
-public interface OphthaAppComponent {
+public interface SmartSightAppComponent {
     void inject(BaseActivity activity);
 
     void inject(BaseFragment baseFragment);

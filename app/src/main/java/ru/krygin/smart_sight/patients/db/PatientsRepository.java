@@ -69,6 +69,7 @@ public class PatientsRepository {
             patient.setGender(Patient.Gender.fromBoolean(input.getGender()));
             patient.setBirthday(input.getDateOfBirth());
             patient.setPatientId(input.getCardNumber());
+            patient.setDiagnosis(input.getDiagnosis());
             patient.setExaminations(Lists.newArrayList(Iterables.transform(input.getExaminations(), examinationTransformer)));
             return patient;
         }
@@ -89,6 +90,7 @@ public class PatientsRepository {
             patientData.setGender(input.getGender().toBoolean());
             patientData.setDateOfBirth(input.getBirthday());
             patientData.setCardNumber(input.getPatientId());
+            patientData.setDiagnosis(input.getDiagnosis());
             return patientData;
         }
     };
@@ -104,7 +106,6 @@ public class PatientsRepository {
             examination.setUUID(input.getUUID());
             examination.setTitle(input.getTitle());
             examination.setComment(input.getComment());
-            examination.setDiagnosis(input.getDiagnosis());
             examination.setDate(input.getDate());
             examination.setSnapshots(Lists.newArrayList(Iterables.transform(input.getSnapshots(), snapshotTransformer)));
 
@@ -126,7 +127,6 @@ public class PatientsRepository {
             examinationObject.setUUID(input.getUUID());
             examinationObject.setTitle(input.getTitle());
             examinationObject.setComment(input.getComment());
-            examinationObject.setDiagnosis(input.getDiagnosis());
             examinationObject.setDate(input.getDate());
             return examinationObject;
         }

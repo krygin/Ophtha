@@ -10,13 +10,13 @@ import ru.krygin.smart_sight.core.Injector;
  * Created by krygin on 02.08.17.
  */
 
-public class OphthaApplication extends Application {
+public class SmartSightApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
         Fresco.initialize(this);
-        OphthaAppComponent appComponent = DaggerOphthaAppComponent
+        SmartSightAppComponent appComponent = DaggerSmartSightAppComponent
                 .builder()
                 .applicationModule(new ApplicationModule(this))
                 .asyncModule(new AsyncModule())

@@ -1,6 +1,6 @@
 package ru.krygin.smart_sight.core;
 
-import ru.krygin.smart_sight.OphthaAppComponent;
+import ru.krygin.smart_sight.SmartSightAppComponent;
 
 /**
  * Created by krygin on 20.08.17.
@@ -9,13 +9,13 @@ import ru.krygin.smart_sight.OphthaAppComponent;
 public class Injector {
 
 
-    private static OphthaAppComponent sAppComponent;
+    private static SmartSightAppComponent sAppComponent;
 
-    public static OphthaAppComponent getAppComponent() {
+    public static SmartSightAppComponent getAppComponent() {
         return sAppComponent;
     }
 
-    public static void setAppComponent(OphthaAppComponent appComponent) {
+    public static void setAppComponent(SmartSightAppComponent appComponent) {
         sAppComponent = appComponent;
     }
 }

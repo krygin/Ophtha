@@ -26,6 +26,7 @@ public class PatientData {
     public static final String FIELD_DATE_OF_BIRTH = "date_of_birth";
     public static final String FIELD_GENDER = "gender";
     public static final String FIELD_CARD_NUMBER = "card_number";
+    public static final String FIELD_DIAGNOSIS = "diagnosis";
 
     @DatabaseField(columnName = FIELD_ID, generatedId = true)
     private long UUID;
@@ -47,6 +48,9 @@ public class PatientData {
 
     @DatabaseField(columnName = FIELD_CARD_NUMBER)
     private String cardNumber;
+
+    @DatabaseField(columnName = FIELD_DIAGNOSIS)
+    private String mDiagnosis;
 
     @ForeignCollectionField(eager = true)
     public ForeignCollection<ExaminationData> examinations;
@@ -107,7 +111,17 @@ public class PatientData {
         this.cardNumber = cardNumber;
     }
 
+    public String getDiagnosis() {
+        return mDiagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        mDiagnosis = diagnosis;
+    }
+
     public ForeignCollection<ExaminationData> getExaminations() {
         return examinations;
     }
+
+
 }

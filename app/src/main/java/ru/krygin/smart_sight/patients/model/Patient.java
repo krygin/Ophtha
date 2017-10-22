@@ -20,6 +20,7 @@ public class Patient {
     private String mPatientId;
     private Date mBirthday;
     private List<Examination> mExaminations;
+    private String mDiagnosis;
 
     public void setUUID(long UUID) {
         mUUID = UUID;
@@ -77,6 +78,14 @@ public class Patient {
         return mBirthday;
     }
 
+    public String getDiagnosis() {
+        return mDiagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        mDiagnosis = diagnosis;
+    }
+
     public void setExaminations(List<Examination> examinations) {
         mExaminations = examinations;
     }
@@ -84,6 +93,8 @@ public class Patient {
     public List<Examination> getExaminations() {
         return mExaminations;
     }
+
+
 
 
     public enum Gender {

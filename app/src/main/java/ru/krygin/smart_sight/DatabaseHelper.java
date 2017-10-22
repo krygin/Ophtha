@@ -19,7 +19,7 @@ import ru.krygin.smart_sight.snapshot.db.SnapshotData;
  */
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
-    private static int DATABASE_VERSION = 1;
+    private static int DATABASE_VERSION = 2;
     private static String DATABASE_NAME = "smart_sight_database.db";
 
     public DatabaseHelper(Context context) {
