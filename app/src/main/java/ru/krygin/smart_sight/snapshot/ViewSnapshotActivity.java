@@ -1,6 +1,8 @@
 package ru.krygin.smart_sight.snapshot;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
@@ -27,7 +29,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.relex.photodraweeview.PhotoDraweeView;
 import ru.krygin.smart_sight.R;
+import ru.krygin.smart_sight.core.async.UseCase;
 import ru.krygin.smart_sight.core.ui.BaseActivity;
+import ru.krygin.smart_sight.oculus.GetOculusSnapshotUseCase;
 
 /**
  * Created by krygin on 06.08.17.
@@ -35,6 +39,7 @@ import ru.krygin.smart_sight.core.ui.BaseActivity;
 
 public class ViewSnapshotActivity extends BaseActivity {
 
+    private static final String EXTRA_SNAPSHOT_UUID = "EXTRA_SNAPSHOT_UUID";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -65,31 +70,45 @@ public class ViewSnapshotActivity extends BaseActivity {
     @BindView(R.id.bottom_sheet)
     View mBottomSheet;
 
+    public static Intent newIntent(Context context, long snapshotUUID) {
+        Intent intent = new Intent(context, ViewSnapshotActivity.class);
+        intent.putExtra(EXTRA_SNAPSHOT_UUID, snapshotUUID);
+        return intent;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_snapshot);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mOculusSnapshotImageView.setMaximumScale(10f);
-        mOculusSnapshotImageView.setPhotoUri(Uri.parse("http://www.yvetrov.ru/UserFiles/Image/yv_os.jpg"));
-        mOculusCommentTextView.setText("Исследование в проходящем свете используют для диагностики патологии " +
-                "в хрусталике и в стекловидном теле. Это прозрачные оптические среды глаза. " +
-                "Исследование проводится в темной комнате. Матовую лампу мощностью около 100 Вт устанавливают " +
-                "слева и несколько позади больного. Врач садится напротив на расстоянии 30–40 см и смотрит " +
-                "через отверстие глазного зеркала – офтальмоскопа правым глазом, направляя отраженный зеркалом " +
-                "офтальмоскопа пучок света в зрачок больного. Свет проходит внутрь глаза и отражается от сосудистой " +
-                "оболочки и пигментного эпителия, при этом зрачок «загорается» красным цветом. Красный цвет объясняется " +
-                "отчасти просвечиванием крови сосудистой оболочки, отчасти красно-бурым оттенком ретикального пигмента. " +
-                "Ход лучей от зеркала в глаз и ход отраженного пучка по закону сопряженных фокусов совпадают. " +
-                "В глаз врача через отверстие в офтальмоскопе попадают отраженные от глазного дна лучи, и зрачок светится.");
+        getUseCaseHandler().execute(new GetOculusSnapshotUseCase(), new GetOculusSnapshotUseCase.RequestValues(getIntent().getLongExtra(EXTRA_SNAPSHOT_UUID, 0)), new UseCase.UseCaseCallback<GetOculusSnapshotUseCase.ResponseValue>() {
+            @Override
+            public void onSuccess(GetOculusSnapshotUseCase.ResponseValue response) {
+                mOculusSnapshotImageView.setPhotoUri(Uri.parse(response.getSnapshot().getFilename()));
+                mOculusCommentTextView.setText(response.getSnapshot().getComment());
+            }
 
+            @Override
+            public void onError() {
+
+            }
+        });
+        mOculusSnapshotImageView.setMaximumScale(10f);
     }
 
     @Override

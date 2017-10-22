@@ -87,7 +87,7 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
                 ExaminationSection.OnShapshotClickListener onShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
                     @Override
                     public void onSnapshotClick(Snapshot snapshot) {
-                        Intent intent = new Intent(getContext(), ViewSnapshotActivity.class);
+                        Intent intent = ViewSnapshotActivity.newIntent(getContext(), snapshot.getUUID());
                         startActivity(intent);
                     }
                 };
