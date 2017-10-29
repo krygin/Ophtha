@@ -64,20 +64,6 @@ public class ExaminationActivityPresenter extends MvpPresenter<ExaminationView> 
     }
 
     public void addNewSnapshot(String photoUri, long photoTimestamp, long examinationUUID) {
-        Snapshot snapshot = new Snapshot();
-        snapshot.setUUID(photoTimestamp);
-        snapshot.setFilename(photoUri);
-        snapshot.setOculus(mPendingOculusToAdd);
-        useCaseHandler.execute(new SaveSnapshotUseCase(), new SaveSnapshotUseCase.RequestValues(examinationUUID, snapshot), new UseCase.UseCaseCallback<SaveSnapshotUseCase.ResponseValue>() {
-            @Override
-            public void onSuccess(SaveSnapshotUseCase.ResponseValue response) {
-                getViewState().notifyChanges();
-            }
 
-            @Override
-            public void onError() {
-
-            }
-        });
     }
 }

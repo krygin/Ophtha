@@ -10,11 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.relex.photodraweeview.PhotoDraweeView;
+import ru.krygin.smart_sight.FileUriProvider;
 import ru.krygin.smart_sight.R;
+import ru.krygin.smart_sight.core.Injector;
 import ru.krygin.smart_sight.core.async.UseCase;
 import ru.krygin.smart_sight.core.ui.BaseFragment;
 import ru.krygin.smart_sight.oculus.GetOculusSnapshotUseCase;
@@ -26,6 +30,8 @@ import ru.krygin.smart_sight.oculus.GetOculusSnapshotUseCase;
 public class OculusSnapshotFragment extends BaseFragment {
 
     private static final String ARG_OCULUS_SNAPSHOT_UUID = "ARG_OCULUS_SNAPSHOT_UUID";
+
+    @Inject FileUriProvider mFileUriProvider;
 
     @BindView(R.id.oculus_shapshot_image_view)
     PhotoDraweeView mOculusSnapshotImageView;
@@ -40,6 +46,7 @@ public class OculusSnapshotFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Injector.getAppComponent().inject(this);
         mOnCloseOculusPreviewButtonClickListener = (OnCloseOculusPreviewButtonClickListener) getParentFragment();
     }
 
@@ -61,7 +68,7 @@ public class OculusSnapshotFragment extends BaseFragment {
         getUseCaseHandler().execute(new GetOculusSnapshotUseCase(), new GetOculusSnapshotUseCase.RequestValues(mOculusSnapshotUUID), new UseCase.UseCaseCallback<GetOculusSnapshotUseCase.ResponseValue>() {
             @Override
             public void onSuccess(GetOculusSnapshotUseCase.ResponseValue response) {
-                mOculusSnapshotImageView.setPhotoUri(Uri.parse(response.getSnapshot().getFilename()));
+                mOculusSnapshotImageView.setImageURI(mFileUriProvider.getUriForSnapshotFilename(response.getSnapshot().getFilename()));
             }
 
             @Override

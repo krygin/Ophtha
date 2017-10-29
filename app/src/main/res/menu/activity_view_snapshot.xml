@@ -4,6 +4,11 @@
 
     <item
         android:id="@+id/export_to_pdf_menu_item"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="Export To Pdf" />
+
+    <item
+        android:id="@+id/remove_snapshot_menu_item"
+        app:showAsAction="ifRoom"
+        android:title="Remove snapshot"/>
 </menu>

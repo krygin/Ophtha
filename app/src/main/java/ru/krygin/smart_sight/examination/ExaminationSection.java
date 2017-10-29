@@ -17,11 +17,15 @@ import com.google.common.collect.Lists;
 import java.text.DateFormat;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+import ru.krygin.smart_sight.FileUriProvider;
 import ru.krygin.smart_sight.R;
+import ru.krygin.smart_sight.core.Injector;
 import ru.krygin.smart_sight.examination.model.Examination;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
 import ru.krygin.smart_sight.oculus.Oculus;
@@ -37,9 +41,13 @@ public class ExaminationSection extends StatelessSection {
     private OnShapshotClickListener mOnSnapshotClickListener;
     private OnExaminationClickListener mOnSectionClickListener;
 
+    @Inject
+    FileUriProvider mFileUriProvider;
+
     public ExaminationSection(Examination examination, Oculus oculus) {
         super(new SectionParameters.Builder(R.layout.item_oculus_examination_snapshot_preview)
                 .headerResourceId(R.layout.item_oculus_examination_info_header).build());
+        Injector.getAppComponent().inject(this);
         mExamination = examination;
         mOculus = oculus;
     }
@@ -62,13 +70,7 @@ public class ExaminationSection extends StatelessSection {
     public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         Snapshot snapshot = getFilteredByOculusSnapshots(mExamination.getSnapshots()).get(position);
-        itemViewHolder.imageView.setController(
-                Fresco.newDraweeControllerBuilder().setImageRequest(
-                        ImageRequestBuilder
-                                .newBuilderWithSource(Uri.parse(snapshot.getFilename()))
-                                .build())
-                        .build());
-
+        itemViewHolder.imageView.setImageURI(mFileUriProvider.getUriForSnapshotFilename(snapshot.getFilename()));
         itemViewHolder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
         itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

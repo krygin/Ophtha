@@ -1,5 +1,6 @@
 package ru.krygin.smart_sight.examination;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,9 +14,13 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ru.krygin.smart_sight.FileUriProvider;
 import ru.krygin.smart_sight.R;
+import ru.krygin.smart_sight.core.Injector;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
 import ru.krygin.smart_sight.oculus.Oculus;
 
@@ -27,10 +32,16 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
 
 
     private final Oculus mOculus;
+    private final OnShapshotClickListener mOnSnapshotClickListener;
     private List<Snapshot> mSnapshots = new ArrayList<>();
 
-    public OculusSnapshotsAdapter(Oculus oculus) {
+    @Inject
+    FileUriProvider mFileUriProvider;
+
+    public OculusSnapshotsAdapter(Oculus oculus, OnShapshotClickListener onShapshotClickListener) {
         mOculus = oculus;
+        mOnSnapshotClickListener = onShapshotClickListener;
+        Injector.getAppComponent().inject(this);
     }
 
     @Override
@@ -42,8 +53,15 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Snapshot snapshot = getFilteredByOculusSnapshots(mSnapshots).get(position);
-        holder.imageView.setImageURI(snapshot.getFilename());
+        Uri uri = mFileUriProvider.getUriForSnapshotFilename(snapshot.getFilename());
+        holder.imageView.setImageURI(uri);
         holder.indicatorView.setVisibility(!TextUtils.isEmpty(snapshot.getComment()) ? View.VISIBLE : View.GONE);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnSnapshotClickListener.onSnapshotClick(snapshot);
+            }
+        });
 
     }
 
@@ -71,6 +89,10 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface OnShapshotClickListener {
+        void onSnapshotClick(Snapshot snapshot);
     }
 
     private List<Snapshot> getFilteredByOculusSnapshots(List<Snapshot> snapshots) {

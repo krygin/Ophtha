@@ -7,6 +7,7 @@ import android.support.v4.content.FileProvider;
 
 import java.io.File;
 
+import ru.krygin.smart_sight.camera.TakePhotoActivity;
 import ru.krygin.smart_sight.oculus.Oculus;
 
 /**
@@ -16,9 +17,11 @@ import ru.krygin.smart_sight.oculus.Oculus;
 public class FileUriProvider {
 
     private final Context mContext;
+    private final SmartSightFileManager mFileManager;
 
-    public FileUriProvider(Context context) {
+    public FileUriProvider(Context context, SmartSightFileManager fileManager) {
         mContext = context;
+        mFileManager = fileManager;
     }
 
     public Uri getNewOculusSnapshotUri(String examination, Oculus oculus) {
@@ -29,6 +32,13 @@ public class FileUriProvider {
     public File getNewOculusSnapshotFile(String examination, Oculus oculus) {
         File oculusSnapshots = getOculusSnapshotsFile(examination, oculus);
         return new File(oculusSnapshots, String.valueOf(Long.valueOf(System.currentTimeMillis())));
+    }
+
+    public Uri getUriForSnapshotFilename(String filename) {
+        File snapshotFile = mFileManager.getSnapshotFile(filename);
+        return FileProvider.getUriForFile(mContext,
+                "ru.krygin.smart_sight.fileprovider",
+                snapshotFile);
     }
 
     public Uri getOculusSnapshotsUri(String examination, Oculus oculus) {

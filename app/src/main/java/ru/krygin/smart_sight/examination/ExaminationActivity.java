@@ -37,7 +37,6 @@ import ru.krygin.smart_sight.oculus.Oculus;
  */
 
 public class ExaminationActivity extends BaseActivity implements
-        OculusExaminationFragment.OnAddSnapshotButtonClickListener,
         ExaminationUUIDProvider,
         ExaminationView {
 
@@ -132,33 +131,6 @@ public class ExaminationActivity extends BaseActivity implements
         mPresenter.loadPatient(mPatientUUID, mExaminationUUID);
     }
 
-    @Override
-    public void onAddSnapshotButtonClick(Oculus oculus) {
-        dispatchTakePictureIntent();
-    }
-
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        ComponentName componentName = takePictureIntent.resolveActivity(getPackageManager());
-        if (componentName != null) {
-            // Create the File where the photo should go
-            File photoFolder = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "smart_sight_snapshots");
-            if (!photoFolder.exists()) {
-                photoFolder.mkdirs();
-            }
-            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", mPhotoTimestamp, Oculus.DEXTER.name()));
-            // Continue only if the File was successfully created
-            mPhotoUri = FileProvider.getUriForFile(this,
-                    "ru.krygin.smart_sight.fileprovider",
-                    photoFile);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-            takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivityForResult(takePictureIntent, 123);
-        }
-    }
-
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, ExaminationActivity.class);
         return intent;
@@ -188,39 +160,10 @@ public class ExaminationActivity extends BaseActivity implements
     public void requestNewSnapshot(Oculus oculus) {
         Intent intent = TakePhotoActivity.newIntent(this, mExaminationUUID, oculus);
         startActivity(intent);
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        // Ensure that there's a camera activity to handle the intent
-//        ComponentName componentName = takePictureIntent.resolveActivity(getPackageManager());
-//        if (componentName != null) {
-//            // Create the File where the photo should go
-//            File photoFolder = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "smart_sight_snapshots");
-//            if (!photoFolder.exists()) {
-//                photoFolder.mkdirs();
-//            }
-//            mPhotoTimestamp = System.currentTimeMillis();
-//            File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", mPhotoTimestamp, Oculus.DEXTER.name()));
-//            // Continue only if the File was successfully created
-//            mPhotoUri = FileProvider.getUriForFile(this,
-//                    "ru.krygin.smart_sight.fileprovider",
-//                    photoFile);
-//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-//            takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            startActivityForResult(takePictureIntent, 123);
-//        }
     }
 
     @Override
     public void notifyChanges() {
         mPagerAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case 123:
-                if (resultCode == Activity.RESULT_OK) {
-                    mPresenter.addNewSnapshot(mPhotoUri.toString(), mPhotoTimestamp, mExaminationUUID);
-                }
-        }
     }
 }

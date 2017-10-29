@@ -72,36 +72,13 @@ public class TakePhotoActivity extends BaseActivity {
                 getBackgroundHandler().post(new Runnable() {
                     @Override
                     public void run() {
-                        File photoFolder = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "smart_sight_snapshots");
-                        if (!photoFolder.exists()) {
-                            photoFolder.mkdirs();
-                        }
                         long photoTimestamp = System.currentTimeMillis();
-                        File photoFile = new File(photoFolder, String.format(Locale.getDefault(), "%d_%s", photoTimestamp, mOculus.name()));
-
-                        FileOutputStream fileOutputStream = null;
-                        try {
-                            fileOutputStream = new FileOutputStream(photoFile);
-                            fileOutputStream.write(data);
-                            fileOutputStream.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            try {
-                                fileOutputStream.close();
-                            } catch (IOException e) {
-                            }
-                        }
-
-                        Uri photoUri = FileProvider.getUriForFile(TakePhotoActivity.this,
-                                "ru.krygin.smart_sight.fileprovider",
-                                photoFile);
-
+                        String filename = String.format(Locale.getDefault(), "%d_%s", photoTimestamp, mOculus.name());
                         Snapshot snapshot = new Snapshot();
                         snapshot.setUUID(photoTimestamp);
-                        snapshot.setFilename(photoUri.toString());
+                        snapshot.setFilename(filename);
                         snapshot.setOculus(mOculus);
-                        getUseCaseHandler().execute(new SaveSnapshotUseCase(), new SaveSnapshotUseCase.RequestValues(mExaminationUUID, snapshot), new UseCase.UseCaseCallback<SaveSnapshotUseCase.ResponseValue>() {
+                        getUseCaseHandler().execute(new SaveSnapshotUseCase(), new SaveSnapshotUseCase.RequestValues(mExaminationUUID, snapshot, data), new UseCase.UseCaseCallback<SaveSnapshotUseCase.ResponseValue>() {
                             @Override
                             public void onSuccess(SaveSnapshotUseCase.ResponseValue response) {
                                 finish();

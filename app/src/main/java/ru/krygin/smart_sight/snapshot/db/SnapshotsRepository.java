@@ -37,4 +37,9 @@ public class SnapshotsRepository {
         snapshotData.setExaminationData(examinationData);
         snapshotDataDao.createOrUpdate(snapshotData);
     }
+
+    public void removeSnapshot(Snapshot snapshot) {
+        SnapshotData snapshotData = snapshotTransformerReverse.apply(snapshot);
+        mDatabaseHelper.getRuntimeExceptionDao(SnapshotData.class).delete(snapshotData);
+    }
 }

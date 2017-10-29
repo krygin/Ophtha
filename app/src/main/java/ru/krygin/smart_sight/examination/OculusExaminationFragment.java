@@ -1,20 +1,14 @@
 package ru.krygin.smart_sight.examination;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +17,8 @@ import ru.krygin.smart_sight.core.async.UseCase;
 import ru.krygin.smart_sight.core.ui.TitledFragment;
 import ru.krygin.smart_sight.examination.use_cases.GetExaminationsUseCase;
 import ru.krygin.smart_sight.oculus.Oculus;
+import ru.krygin.smart_sight.snapshot.ViewSnapshotActivity;
+import ru.krygin.smart_sight.snapshot.model.Snapshot;
 
 /**
  * Created by krygin on 14.08.17.
@@ -35,21 +31,24 @@ public abstract class OculusExaminationFragment extends TitledFragment {
 
 
     private OculusSnapshotsAdapter mOculusSnapshotsAdapter;
-    private OnAddSnapshotButtonClickListener mOnAddSnapshotButtonClickListener;
-    private Uri mPhotoUri;
     private ExaminationUUIDProvider mExaminationUUIDProvider;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mOnAddSnapshotButtonClickListener = (OnAddSnapshotButtonClickListener) context;
         mExaminationUUIDProvider = (ExaminationUUIDProvider) context;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mOculusSnapshotsAdapter = new OculusSnapshotsAdapter(getOculus());
+        mOculusSnapshotsAdapter = new OculusSnapshotsAdapter(getOculus(), new OculusSnapshotsAdapter.OnShapshotClickListener() {
+            @Override
+            public void onSnapshotClick(Snapshot snapshot) {
+                Intent intent = ViewSnapshotActivity.newIntent(getContext(), snapshot.getUUID());
+                startActivity(intent);
+            }
+        });
     }
 
     @Nullable
@@ -89,45 +88,6 @@ public abstract class OculusExaminationFragment extends TitledFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mOnAddSnapshotButtonClickListener = null;
         mExaminationUUIDProvider = null;
-    }
-
-    interface OnAddSnapshotButtonClickListener {
-        void onAddSnapshotButtonClick(Oculus oculus);
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
-        ComponentName componentName = takePictureIntent.resolveActivity(getContext().getPackageManager());
-        if (componentName != null) {
-            // Create the File where the photo should go
-
-            // Continue only if the File was successfully created
-            File newOculusSnapshotFile = getFileUriProvider().getNewOculusSnapshotFile("eee", getOculus());
-            mPhotoUri = FileProvider.getUriForFile(getContext(), "ru.krygin.smart_sight.fileprovider", newOculusSnapshotFile);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-            startActivityForResult(takePictureIntent, 123);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case 123:
-//                File file = getFileUriProvider().getOculusSnapshotsFile("eee", getOculus());
-//                File[] files = file.listFiles();
-//                Log.e("qqqq", String.valueOf(files.length));
-//                List<Snapshot> snapshotList = new ArrayList<>();
-//                for (File f: files) {
-//                    Uri uri = Uri.parse()
-//                    Snapshot snapshot = new Snapshot(FileProvider.getUriForFile(getContext(), "ru.krygin.ophtha.fileprovider", f), "qwqweqwe");
-//                    snapshotList.add(snapshot);
-//                }
-//                GetExaminationsUseCase.snapshots.clear();
-//                GetExaminationsUseCase.snapshots.addAll(snapshotList);
-                break;
-        }
     }
 }

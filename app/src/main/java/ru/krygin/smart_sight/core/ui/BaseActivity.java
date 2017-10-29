@@ -21,8 +21,8 @@ public class BaseActivity extends MvpAppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Injector.getAppComponent().inject(this);
+        super.onCreate(savedInstanceState);
     }
 
     protected UseCaseHandler getUseCaseHandler() {

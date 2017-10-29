@@ -24,14 +24,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.relex.photodraweeview.PhotoDraweeView;
+import ru.krygin.smart_sight.FileUriProvider;
 import ru.krygin.smart_sight.R;
+import ru.krygin.smart_sight.core.Injector;
 import ru.krygin.smart_sight.core.async.UseCase;
 import ru.krygin.smart_sight.core.ui.BaseActivity;
 import ru.krygin.smart_sight.oculus.GetOculusSnapshotUseCase;
+import ru.krygin.smart_sight.snapshot.model.Snapshot;
+import ru.krygin.smart_sight.snapshot.use_cases.RemoveSnapshotUseCase;
 
 /**
  * Created by krygin on 06.08.17.
@@ -40,6 +46,10 @@ import ru.krygin.smart_sight.oculus.GetOculusSnapshotUseCase;
 public class ViewSnapshotActivity extends BaseActivity {
 
     private static final String EXTRA_SNAPSHOT_UUID = "EXTRA_SNAPSHOT_UUID";
+
+    @Inject
+    FileUriProvider mFileUriProvider;
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -53,6 +63,8 @@ public class ViewSnapshotActivity extends BaseActivity {
     ImageButton mEditOculusSnapshotCommentButton;
 
     private BottomSheetBehavior<View> mBottomSheetBehavior;
+    private long mSnapshotUUID;
+    private Snapshot mSnapshot;
 
     @OnClick(R.id.edit_oculus_snapshot_comment_button)
     void onClick(View view) {
@@ -78,7 +90,9 @@ public class ViewSnapshotActivity extends BaseActivity {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Injector.getAppComponent().inject(this);
         super.onCreate(savedInstanceState);
+        mSnapshotUUID = getIntent().getLongExtra(EXTRA_SNAPSHOT_UUID, 0);
         setContentView(R.layout.activity_view_snapshot);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
@@ -99,7 +113,8 @@ public class ViewSnapshotActivity extends BaseActivity {
         getUseCaseHandler().execute(new GetOculusSnapshotUseCase(), new GetOculusSnapshotUseCase.RequestValues(getIntent().getLongExtra(EXTRA_SNAPSHOT_UUID, 0)), new UseCase.UseCaseCallback<GetOculusSnapshotUseCase.ResponseValue>() {
             @Override
             public void onSuccess(GetOculusSnapshotUseCase.ResponseValue response) {
-                mOculusSnapshotImageView.setPhotoUri(Uri.parse(response.getSnapshot().getFilename()));
+                mSnapshot = response.getSnapshot();
+                mOculusSnapshotImageView.setPhotoUri(mFileUriProvider.getUriForSnapshotFilename(response.getSnapshot().getFilename()));
                 mOculusCommentTextView.setText(response.getSnapshot().getComment());
             }
 
@@ -178,6 +193,19 @@ public class ViewSnapshotActivity extends BaseActivity {
                     }
                 }
                 return true;
+            case R.id.remove_snapshot_menu_item:
+                getUseCaseHandler().execute(new RemoveSnapshotUseCase(), new RemoveSnapshotUseCase.RequestValues(mSnapshot), new UseCase.UseCaseCallback<RemoveSnapshotUseCase.ResponseValue>() {
+                    @Override
+                    public void onSuccess(RemoveSnapshotUseCase.ResponseValue response) {
+                        finish();
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+                return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
