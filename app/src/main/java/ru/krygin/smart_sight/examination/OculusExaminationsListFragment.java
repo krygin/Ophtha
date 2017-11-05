@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,9 +35,28 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
+    @BindView(R.id.empty_view)
+    FrameLayout mEmptyView;
+
 
     private SectionedRecyclerViewAdapter mSectionedRecyclerViewAdapter;
     private PatientUUIDProvider mPatientUUIDProvider;
+
+    private ExaminationSection.OnShapshotClickListener sOnShapshotClickListener  = new ExaminationSection.OnShapshotClickListener() {
+        @Override
+        public void onSnapshotClick(Snapshot snapshot) {
+            Intent intent = ViewSnapshotActivity.newIntent(getContext(), snapshot.getUUID());
+            startActivity(intent);
+        }
+    };
+
+    private ExaminationSection.OnExaminationClickListener onExaminationClickListener = new ExaminationSection.OnExaminationClickListener() {
+        @Override
+        public void onExaminationClick(Examination examination) {
+            Intent intent = ExaminationActivity.newIntent(getContext(), mPatientUUIDProvider.getPatientUUID(), examination.getUUID());
+            startActivity(intent);
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,31 +105,11 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
             public void onSuccess(GetPatientUseCase.ResponseValue response) {
                 Patient patient = response.getPatient();
                 mSectionedRecyclerViewAdapter.removeAllSections();
-
-                ExaminationSection.OnShapshotClickListener onShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
-                    @Override
-                    public void onSnapshotClick(Snapshot snapshot) {
-                        Intent intent = ViewSnapshotActivity.newIntent(getContext(), snapshot.getUUID());
-                        startActivity(intent);
-                    }
-                };
-
-                ExaminationSection.OnExaminationClickListener onExaminationClickListener = new ExaminationSection.OnExaminationClickListener() {
-                    @Override
-                    public void onExaminationClick(Examination examination) {
-                        Intent intent = ExaminationActivity.newIntent(getContext(), mPatientUUIDProvider.getPatientUUID(), examination.getUUID());
-                        startActivity(intent);
-                    }
-                };
-
-                for (Examination examination: patient.getExaminations()) {
-                    ExaminationSection examinationSection = new ExaminationSection(examination, getOculus());
-                    examinationSection.setOnShapshotClickListener(onShapshotClickListener);
-                    examinationSection.setOnSectionClickListener(onExaminationClickListener);
-                    mSectionedRecyclerViewAdapter.addSection(examinationSection);
+                if (patient.getExaminations().isEmpty()) {
+                    showEmptyView();
+                } else {
+                    showExaminations(patient.getExaminations());
                 }
-                mSectionedRecyclerViewAdapter.notifyDataSetChanged();
-
             }
 
             @Override
@@ -115,6 +117,24 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
 
             }
         });
+    }
+
+    private void showExaminations(List<Examination> examinations) {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.GONE);
+
+        for (Examination examination: examinations) {
+            ExaminationSection examinationSection = new ExaminationSection(examination, getOculus());
+            examinationSection.setOnShapshotClickListener(sOnShapshotClickListener);
+            examinationSection.setOnSectionClickListener(onExaminationClickListener);
+            mSectionedRecyclerViewAdapter.addSection(examinationSection);
+        }
+        mSectionedRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    private void showEmptyView() {
+        mRecyclerView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.VISIBLE);
     }
 
     @Override
