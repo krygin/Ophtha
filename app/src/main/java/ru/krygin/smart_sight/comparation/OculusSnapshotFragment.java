@@ -68,7 +68,7 @@ public class OculusSnapshotFragment extends BaseFragment {
         getUseCaseHandler().execute(new GetOculusSnapshotUseCase(), new GetOculusSnapshotUseCase.RequestValues(mOculusSnapshotUUID), new UseCase.UseCaseCallback<GetOculusSnapshotUseCase.ResponseValue>() {
             @Override
             public void onSuccess(GetOculusSnapshotUseCase.ResponseValue response) {
-                mOculusSnapshotImageView.setImageURI(mFileUriProvider.getUriForSnapshotFilename(response.getSnapshot().getFilename()));
+                mOculusSnapshotImageView.setPhotoUri(mFileUriProvider.getUriForSnapshotFilename(response.getSnapshot().getFilename()));
             }
 
             @Override
