@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,9 +32,21 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
+
+    @BindView(R.id.empty_view)
+    FrameLayout mEmptyView;
+
     private SectionedRecyclerViewAdapter mOculusExaminationsAdapter;
     private OnOculusSnapshotPreviewClickListener mOnOculusSnapshotPreviewClickListener;
     private PatientUUIDProvider mPatientUUIDProvider;
+    private ExaminationSection.OnShapshotClickListener mOnShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
+        @Override
+        public void onSnapshotClick(Snapshot snapshot) {
+            mOnOculusSnapshotPreviewClickListener.onOculusSnapshotPreviewClick(snapshot);
+        }
+    };
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -84,20 +99,12 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
         getUseCaseHandler().execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(mPatientUUIDProvider.getPatientUUID()), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
             @Override
             public void onSuccess(GetPatientUseCase.ResponseValue response) {
-                mOculusExaminationsAdapter.removeAllSections();
-                ExaminationSection.OnShapshotClickListener onShapshotClickListener = new ExaminationSection.OnShapshotClickListener() {
-                    @Override
-                    public void onSnapshotClick(Snapshot snapshot) {
-                        mOnOculusSnapshotPreviewClickListener.onOculusSnapshotPreviewClick(snapshot);
-                    }
-                };
-
-                for (Examination examination : response.getPatient().getExaminations()) {
-                    ExaminationSection examinationSection = new ExaminationSection(examination, getOculus());
-                    examinationSection.setOnShapshotClickListener(onShapshotClickListener);
-                    mOculusExaminationsAdapter.addSection(examinationSection);
+                List<Examination> examinations = response.getPatient().getExaminations();
+                if (examinations.isEmpty()) {
+                    showEmptyView();
+                } else {
+                    showExaminations(examinations);
                 }
-                mOculusExaminationsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -105,6 +112,23 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
 
             }
         });
+    }
+
+    private void showEmptyView() {
+        mRecyclerView.setVisibility(View.GONE);
+        mEmptyView.setVisibility(View.VISIBLE);
+    }
+
+    private void showExaminations(List<Examination> examinations) {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mEmptyView.setVisibility(View.GONE);
+        mOculusExaminationsAdapter.removeAllSections();
+        for (Examination examination : examinations) {
+            ExaminationSection examinationSection = new ExaminationSection(examination, getOculus());
+            examinationSection.setOnShapshotClickListener(mOnShapshotClickListener);
+            mOculusExaminationsAdapter.addSection(examinationSection);
+        }
+        mOculusExaminationsAdapter.notifyDataSetChanged();
     }
 
     protected abstract Oculus getOculus();

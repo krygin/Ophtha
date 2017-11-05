@@ -15,6 +15,7 @@
         android:layout_height="16dp"
         android:layout_gravity="top|end"
         android:layout_margin="8dp"
+        android:visibility="gone"
         app:srcCompat="@drawable/ic_close_white_24dp"/>
 
 </FrameLayout>

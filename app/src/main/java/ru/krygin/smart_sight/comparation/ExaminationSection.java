@@ -85,7 +85,7 @@ public class ExaminationSection extends StatelessSection {
     @Override
     public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
         HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        headerViewHolder.oculusExaminationTitleTextView.setText(mExamination.getType());
+        headerViewHolder.oculusExaminationTitleTextView.setText(Examination.Type.values()[mExamination.getType()].toString());
         headerViewHolder.oculusExaminationDateTextView.setText(DateFormat.getDateInstance().format(mExamination.getDate()));
         headerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
