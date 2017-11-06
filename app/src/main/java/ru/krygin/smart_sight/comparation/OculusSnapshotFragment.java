@@ -1,7 +1,6 @@
 package ru.krygin.smart_sight.comparation;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,7 @@ import ru.krygin.smart_sight.R;
 import ru.krygin.smart_sight.core.Injector;
 import ru.krygin.smart_sight.core.async.UseCase;
 import ru.krygin.smart_sight.core.ui.BaseFragment;
-import ru.krygin.smart_sight.oculus.GetOculusSnapshotUseCase;
+import ru.krygin.smart_sight.snapshot.use_cases.GetOculusSnapshotUseCase;
 
 /**
  * Created by krygin on 06.08.17.

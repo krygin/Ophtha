@@ -8,6 +8,7 @@ import ru.krygin.smart_sight.DatabaseHelper;
 import ru.krygin.smart_sight.examination.db.ExaminationData;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
 
+import static ru.krygin.smart_sight.patients.db.PatientsRepository.extendedSnapshotTransformer;
 import static ru.krygin.smart_sight.patients.db.PatientsRepository.snapshotTransformer;
 import static ru.krygin.smart_sight.patients.db.PatientsRepository.snapshotTransformerReverse;
 
@@ -22,11 +23,16 @@ public class SnapshotsRepository {
         mDatabaseHelper = new DatabaseHelper(context);
     }
 
-    public Snapshot getSnapshot(long oculusSnapshotUUID) {
+    public Snapshot getSnapshot(long oculusSnapshotUUID, boolean withRelatedExamination) {
         RuntimeExceptionDao<SnapshotData, Long> snapshotsDao = mDatabaseHelper.getRuntimeExceptionDao(SnapshotData.class);
         SnapshotData snapshotData = snapshotsDao.queryForId(oculusSnapshotUUID);
-        Snapshot snapshot = snapshotTransformer.apply(snapshotData);
+        snapshotData.getExaminationData().getPatient();
+        Snapshot snapshot = withRelatedExamination ? extendedSnapshotTransformer.apply(snapshotData) : snapshotTransformer.apply(snapshotData);
         return snapshot;
+    }
+
+    public Snapshot getSnapshot(long oculusSnapshotUUID) {
+        return getSnapshot(oculusSnapshotUUID, false);
     }
 
     public void createOrUpdateSnapshot(long examinationUUID, Snapshot snapshot) {

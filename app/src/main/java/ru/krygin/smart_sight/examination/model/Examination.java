@@ -3,6 +3,9 @@ package ru.krygin.smart_sight.examination.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import ru.krygin.smart_sight.patients.model.Patient;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
 
 
@@ -18,6 +21,8 @@ public class Examination {
     private int mType;
     private Date mDate;
     private String mComment;
+
+    @Nullable private Patient mPatient;
 
 
     public int getType() {
@@ -58,6 +63,15 @@ public class Examination {
 
     public void setComment(String comment) {
         this.mComment = comment;
+    }
+
+    public void setPatient(@Nullable Patient patient) {
+        mPatient = patient;
+    }
+
+    @Nullable
+    public Patient getPatient() {
+        return mPatient;
     }
 
     public enum Type {

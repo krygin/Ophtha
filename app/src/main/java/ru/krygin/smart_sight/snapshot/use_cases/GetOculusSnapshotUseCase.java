@@ -1,4 +1,4 @@
-package ru.krygin.smart_sight.oculus;
+package ru.krygin.smart_sight.snapshot.use_cases;
 
 import javax.inject.Inject;
 

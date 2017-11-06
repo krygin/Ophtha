@@ -116,6 +116,27 @@ public class PatientsRepository {
         }
     };
 
+    public static Function<ExaminationData, Examination> extendedExaminationTransformer = new Function<ExaminationData, Examination>() {
+        @Nullable
+        @Override
+        public Examination apply(@Nullable ExaminationData input) {
+            if (input == null) {
+                return null;
+            }
+            Examination examination = new Examination();
+            examination.setUUID(input.getUUID());
+            examination.setType(input.getType());
+            examination.setComment(input.getComment());
+            examination.setDate(input.getDate());
+            examination.setSnapshots(Lists.newArrayList(Iterables.transform(input.getSnapshots(), snapshotTransformer)));
+            examination.setPatient(patientTransformer.apply(input.getPatient()));
+//            Iterable<Snapshot> snapshots = Iterables.transform(input.getSnapshots(), snapshotTransformer);
+//            List<Snapshot> filteredSnapshots = Lists.newArrayList(snapshots);
+//            examination.setSnapshots(filteredSnapshots);
+            return examination;
+        }
+    };
+
     public static Function<Examination, ExaminationData> examinationTransformerReverse = new Function<Examination, ExaminationData>() {
         @Nullable
         @Override
@@ -145,6 +166,24 @@ public class PatientsRepository {
             snapshot.setComment(input.getComment());
             snapshot.setTimestamp(input.getTimestamp());
             snapshot.setOculus(Oculus.fromBoolean(input.getOculus()));
+            return snapshot;
+        }
+    };
+
+    public static Function<SnapshotData, Snapshot> extendedSnapshotTransformer = new Function<SnapshotData, Snapshot>() {
+        @Nullable
+        @Override
+        public Snapshot apply(@Nullable SnapshotData input) {
+            if (input == null) {
+                return null;
+            }
+            Snapshot snapshot = new Snapshot();
+            snapshot.setUUID(input.getUUID());
+            snapshot.setFilename(input.getFilename());
+            snapshot.setComment(input.getComment());
+            snapshot.setTimestamp(input.getTimestamp());
+            snapshot.setOculus(Oculus.fromBoolean(input.getOculus()));
+            snapshot.setExamination(extendedExaminationTransformer.apply(input.getExaminationData()));
             return snapshot;
         }
     };

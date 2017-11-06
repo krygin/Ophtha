@@ -4,10 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.pdf.PdfDocument;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.print.PrintManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
@@ -20,10 +19,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -35,8 +30,9 @@ import ru.krygin.smart_sight.R;
 import ru.krygin.smart_sight.core.Injector;
 import ru.krygin.smart_sight.core.async.UseCase;
 import ru.krygin.smart_sight.core.ui.BaseActivity;
-import ru.krygin.smart_sight.oculus.GetOculusSnapshotUseCase;
+import ru.krygin.smart_sight.snapshot.use_cases.GetOculusSnapshotUseCase;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
+import ru.krygin.smart_sight.snapshot.use_cases.GetExtendedOculusSnapshotUseCase;
 import ru.krygin.smart_sight.snapshot.use_cases.RemoveSnapshotUseCase;
 
 /**
@@ -110,9 +106,9 @@ public class ViewSnapshotActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getUseCaseHandler().execute(new GetOculusSnapshotUseCase(), new GetOculusSnapshotUseCase.RequestValues(getIntent().getLongExtra(EXTRA_SNAPSHOT_UUID, 0)), new UseCase.UseCaseCallback<GetOculusSnapshotUseCase.ResponseValue>() {
+        getUseCaseHandler().execute(new GetExtendedOculusSnapshotUseCase(), new GetExtendedOculusSnapshotUseCase.RequestValues(getIntent().getLongExtra(EXTRA_SNAPSHOT_UUID, 0)), new UseCase.UseCaseCallback<GetExtendedOculusSnapshotUseCase.ResponseValue>() {
             @Override
-            public void onSuccess(GetOculusSnapshotUseCase.ResponseValue response) {
+            public void onSuccess(GetExtendedOculusSnapshotUseCase.ResponseValue response) {
                 mSnapshot = response.getSnapshot();
                 mOculusSnapshotImageView.setPhotoUri(mFileUriProvider.getUriForSnapshotFilename(response.getSnapshot().getFilename()));
                 mOculusCommentTextView.setText(response.getSnapshot().getComment());
@@ -166,30 +162,32 @@ public class ViewSnapshotActivity extends BaseActivity {
                     if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
                         Toast.makeText(this, "FUCK", Toast.LENGTH_LONG).show();
                     } else {
+                        PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
+                        printManager.print(getString(R.string.app_name), new PrintReportAdapter(this, mSnapshot), null);
 
-
-                        PdfDocument pdfDocument = new PdfDocument();
-
-                        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(getWindow().getDecorView().getWidth(), getWindow().getDecorView().getHeight(), 0).create();
-
-                        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
-
-
-                        View content = findViewById(android.R.id.content);
-                        content.draw(page.getCanvas());
-
-                        pdfDocument.finishPage(page);
-
-                        File file = new File(getExternalFilesDir("OculusReports"), "qqq.pdf");
-                        try {
-                            if (!file.exists()) {
-                                file.createNewFile();
-                            }
-                            pdfDocument.writeTo(new FileOutputStream(file));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        pdfDocument.close();
+//                        PdfDocument pdfDocument = new PrintedPdfDocument(this, new PrintAttributes.Builder()
+//                                .setResolution(new PrintAttributes.Resolution("res", "Resolusion", 300, 300))
+//                                .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+//                                .setMinMargins(new PrintAttributes.Margins(10, 10, 10, 10)).build());
+//
+//                        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
+//
+//                        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+//
+//                        drawReport(page);
+//
+//                        pdfDocument.finishPage(page);
+//
+//                        File file = new File(getExternalFilesDir("OculusReports"), "qqq.pdf");
+//                        try {
+//                            if (!file.exists()) {
+//                                file.createNewFile();
+//                            }
+//                            pdfDocument.writeTo(new FileOutputStream(file));
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                        pdfDocument.close();
                     }
                 }
                 return true;

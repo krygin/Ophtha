@@ -12,7 +12,9 @@ import ru.krygin.smart_sight.examination.ExaminationSection;
 import ru.krygin.smart_sight.examination.OculusSnapshotsAdapter;
 import ru.krygin.smart_sight.examination.use_cases.GetExaminationsUseCase;
 import ru.krygin.smart_sight.examination.use_cases.SaveExaminationUseCase;
-import ru.krygin.smart_sight.oculus.GetOculusSnapshotUseCase;
+import ru.krygin.smart_sight.snapshot.PrintReportAdapter;
+import ru.krygin.smart_sight.snapshot.use_cases.GetExtendedOculusSnapshotUseCase;
+import ru.krygin.smart_sight.snapshot.use_cases.GetOculusSnapshotUseCase;
 import ru.krygin.smart_sight.patients.CreateOrUpdatePatientPresenter;
 import ru.krygin.smart_sight.patients.use_cases.GetPatientUseCase;
 import ru.krygin.smart_sight.patients.use_cases.GetPatientsUseCase;
@@ -68,4 +70,8 @@ public interface SmartSightAppComponent {
     void inject(OculusSnapshotFragment oculusSnapshotFragment);
 
     void inject(ru.krygin.smart_sight.comparation.ExaminationSection examinationSection);
+
+    void inject(GetExtendedOculusSnapshotUseCase getExtendedOculusSnapshotUseCase);
+
+    void inject(PrintReportAdapter printReportAdapter);
 }

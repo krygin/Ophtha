@@ -2,6 +2,9 @@ package ru.krygin.smart_sight.snapshot.model;
 
 import java.util.Date;
 
+import javax.annotation.Nullable;
+
+import ru.krygin.smart_sight.examination.model.Examination;
 import ru.krygin.smart_sight.oculus.Oculus;
 
 /**
@@ -15,6 +18,9 @@ public class Snapshot {
     private Oculus oculus;
     private String filename;
     private String comment;
+
+    @Nullable
+    private Examination examination;
 
     public Snapshot() {
 
@@ -58,5 +64,14 @@ public class Snapshot {
 
     public void setOculus(Oculus oculus) {
         this.oculus = oculus;
+    }
+
+    public void setExamination(@Nullable Examination examination) {
+        this.examination = examination;
+    }
+
+    @Nullable
+    public Examination getExamination() {
+        return examination;
     }
 }
