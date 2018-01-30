@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import ru.krygin.smart_sight.DateTimeUtils;
 import ru.krygin.smart_sight.R;
 import ru.krygin.smart_sight.core.ui.BaseActivity;
 import ru.krygin.smart_sight.examination.model.Examination;
+import ru.krygin.smart_sight.patients.model.Patient;
 
 /**
  * Created by krygin on 13.09.17.
@@ -122,6 +124,7 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
                 finish();
                 return true;
             case R.id.action_save:
+                if (checkDataIsValid())
                 mPresenter.saveExamination(mPatientUUID,
                         (Examination.Type)mExaminationTypeSpinner.getSelectedItem(),
                         ((Calendar) mDateTextInputLayout.getEditText().getTag()).getTime(),
@@ -131,6 +134,20 @@ public class CreateOrUpdateExaminationActivity extends BaseActivity implements C
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean checkDataIsValid() {
+        boolean result = true;
+        if (mExaminationTypeSpinner.getSelectedItem().equals(Examination.Type.UNDEFINDED)) {
+            mExaminationTypeSpinner.setError(getString(R.string.field_required));
+            result = false;
+        }
+
+        if (mDateTextInputLayout.getEditText().getTag() == null) {
+            mDateTextInputLayout.setError(getString(R.string.field_required));
+            result = false;
+        }
+        return result;
     }
 
     @Override
