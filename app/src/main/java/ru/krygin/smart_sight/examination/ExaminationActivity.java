@@ -1,17 +1,12 @@
 package ru.krygin.smart_sight.examination;
 
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -19,9 +14,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
-
-import java.io.File;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,10 +23,6 @@ import ru.krygin.smart_sight.camera.TakePhotoActivity;
 import ru.krygin.smart_sight.core.ui.BaseActivity;
 import ru.krygin.smart_sight.examination.model.Examination;
 import ru.krygin.smart_sight.oculus.Oculus;
-
-/**
- * Created by krygin on 14.08.17.
- */
 
 public class ExaminationActivity extends BaseActivity implements
         ExaminationUUIDProvider,

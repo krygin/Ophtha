@@ -64,7 +64,7 @@ public class CreateOrUpdateExaminationPresenter extends MvpPresenter<CreateOrUpd
         mUseCaseHandler.execute(new SaveExaminationUseCase(), requestValues, new UseCase.UseCaseCallback<SaveExaminationUseCase.ResponseValue>() {
             @Override
             public void onSuccess(SaveExaminationUseCase.ResponseValue response) {
-                getViewState().close();
+                getViewState().close(patientUUID, mExamination.getUUID());
             }
 
             @Override

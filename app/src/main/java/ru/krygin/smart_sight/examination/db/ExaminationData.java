@@ -25,7 +25,7 @@ public class ExaminationData {
     public static final String FIELD_DATE = "date";
     public static final String FIELD_COMMENT = "comment";
 
-    @DatabaseField(columnName = FIELD_ID, generatedId = true)
+    @DatabaseField(columnName = FIELD_ID, id = true)
     private long UUID;
 
     @DatabaseField(columnName = FIELD_TYPE)

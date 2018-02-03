@@ -10,6 +10,5 @@ import ru.krygin.smart_sight.examination.model.Examination;
 
 public interface CreateOrUpdateExaminationView extends MvpView {
     void showExamination(Examination examination);
-    void close();
-
+    void close(Long patientUUID, Long examinationUUID);
 }
