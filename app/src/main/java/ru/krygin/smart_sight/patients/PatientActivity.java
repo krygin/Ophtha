@@ -114,7 +114,7 @@ public class PatientActivity extends BaseActivity implements PatientUUIDProvider
                 startActivity(compareExaminationsIntent);
                 return true;
             case R.id.edit_menu_item:
-                Intent editPatientIntent = CreateOrUpdatePatientActivity.newIntent(this, mPatientUUID);
+                Intent editPatientIntent = CreateOrUpdatePatientActivity.Companion.newIntent(this, mPatientUUID);
                 startActivity(editPatientIntent);
                 return true;
             default:

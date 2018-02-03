@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import butterknife.ButterKnife;
 import ru.krygin.smart_sight.core.Injector;
 
 /**
@@ -15,6 +16,7 @@ public class SmartSightApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ButterKnife.setDebug(true);
         Fresco.initialize(this);
         SmartSightAppComponent appComponent = DaggerSmartSightAppComponent
                 .builder()

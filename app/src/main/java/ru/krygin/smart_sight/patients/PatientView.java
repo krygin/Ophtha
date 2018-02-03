@@ -11,5 +11,5 @@ import ru.krygin.smart_sight.patients.model.Patient;
 public interface PatientView extends MvpView {
     void showPatient(Patient patient);
 
-    void close();
+    void close(long uuid);
 }

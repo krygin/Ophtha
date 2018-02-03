@@ -11,9 +11,6 @@ import ru.krygin.smart_sight.examination.db.ExaminationData;
 
 import static ru.krygin.smart_sight.patients.db.PatientData.TABLE_NAME_PATIENTS;
 
-/**
- * Created by Ivan on 01.10.2017.
- */
 @DatabaseTable(tableName = TABLE_NAME_PATIENTS)
 public class PatientData {
 
@@ -28,7 +25,7 @@ public class PatientData {
     public static final String FIELD_CARD_NUMBER = "card_number";
     public static final String FIELD_DIAGNOSIS = "diagnosis";
 
-    @DatabaseField(columnName = FIELD_ID, generatedId = true)
+    @DatabaseField(columnName = FIELD_ID, id = true)
     private long UUID;
 
     @DatabaseField(columnName = FIELD_FIRST_NAME)

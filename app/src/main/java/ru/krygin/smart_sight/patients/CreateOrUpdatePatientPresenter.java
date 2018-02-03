@@ -49,7 +49,7 @@ public class CreateOrUpdatePatientPresenter extends MvpPresenter<PatientView> {
         mUseCaseHandler.execute(new SavePatientUseCase(), requestValues, new UseCase.UseCaseCallback<SavePatientUseCase.ResponseValue>() {
             @Override
             public void onSuccess(SavePatientUseCase.ResponseValue response) {
-                getViewState().close();
+                getViewState().close(mPatient.getUUID());
             }
 
             @Override
