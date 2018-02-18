@@ -15,4 +15,5 @@
     <string name="title_doctor_name_preference">Врач</string>
     <string name="summary_doctor_name_preference">Ф.И.О. врача</string>
     <string name="doctor_preferences">Врач</string>
+    <string name="action_search">Поиск</string>
 </resources>

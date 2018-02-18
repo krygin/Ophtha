@@ -3,6 +3,7 @@ package ru.krygin.smart_sight.patients
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -41,9 +42,13 @@ class PatientsActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        getPatients(PatientsFilter(""))
+    }
+
+    private fun getPatients(filter: PatientsFilter) {
         useCaseHandler.execute<GetPatientsUseCase.RequestValues, GetPatientsUseCase.ResponseValue>(
                 GetPatientsUseCase(),
-                GetPatientsUseCase.RequestValues(),
+                GetPatientsUseCase.RequestValues(filter),
                 object : UseCase.UseCaseCallback<GetPatientsUseCase.ResponseValue> {
 
                     override fun onSuccess(response: GetPatientsUseCase.ResponseValue) {
@@ -63,6 +68,25 @@ class PatientsActivity : BaseActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_patients, menu)
+        val searchMenuItem = menu.findItem(R.id.search_menu_item)
+        val searchView = searchMenuItem.actionView as SearchView
+        searchView.isIconified = true
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                getPatients(PatientsFilter(query))
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                getPatients(PatientsFilter(newText))
+                return true
+            }
+
+        })
+        searchView.setOnCloseListener {
+            getPatients(PatientsFilter(null))
+            true
+        }
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -71,6 +95,10 @@ class PatientsActivity : BaseActivity() {
                 R.id.settings_menu_item -> {
                     val settingsActivityIntent = Intent(this, SettingsActivity::class.java)
                     startActivity(settingsActivityIntent)
+                    true
+                }
+                R.id.search_menu_item -> {
+
                     true
                 }
                 else -> super.onOptionsItemSelected(item)

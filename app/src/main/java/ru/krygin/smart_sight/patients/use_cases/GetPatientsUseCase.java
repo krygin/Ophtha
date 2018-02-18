@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import ru.krygin.smart_sight.core.Injector;
 import ru.krygin.smart_sight.core.async.UseCase;
+import ru.krygin.smart_sight.patients.PatientsFilter;
 import ru.krygin.smart_sight.patients.db.PatientsRepository;
 import ru.krygin.smart_sight.patients.model.Patient;
 
@@ -18,21 +19,28 @@ public class GetPatientsUseCase extends UseCase<GetPatientsUseCase.RequestValues
     @Inject
     PatientsRepository mPatientsRepository;
 
-
     public GetPatientsUseCase() {
         Injector.getAppComponent().inject(this);
     }
 
-
     @Override
     protected void executeUseCase(GetPatientsUseCase.RequestValues requestValues) {
-        List<Patient> patients = mPatientsRepository.getPatients();
+        List<Patient> patients = mPatientsRepository.getPatients(requestValues.getPatientsFilter().getSearchQuery());
         ResponseValue responseValue = new ResponseValue(patients);
         getUseCaseCallback().onSuccess(responseValue);
     }
 
     public static class RequestValues implements UseCase.RequestValues {
 
+        private final PatientsFilter mPatientsFilter;
+
+        public RequestValues(PatientsFilter patientsFilter) {
+            mPatientsFilter = patientsFilter;
+        }
+
+        public PatientsFilter getPatientsFilter() {
+            return mPatientsFilter;
+        }
     }
 
     public static class ResponseValue implements UseCase.ResponseValue {

@@ -7,6 +7,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -39,8 +41,27 @@ public class PatientsRepository {
 
 
     public List<Patient> getPatients() {
+        return getPatients(null);
+    }
+
+    public List<Patient> getPatients(String query) {
         RuntimeExceptionDao<PatientData, Long> patientDataDao = mDatabaseHelper.getRuntimeExceptionDao(PatientData.class);
-        List<PatientData> patientDataList = patientDataDao.queryForAll();
+        List<PatientData> patientDataList;
+        try {
+            if (query != null && !query.isEmpty()) {
+                patientDataList = patientDataDao.queryBuilder().where()
+                        .like(PatientData.FIELD_FIRST_NAME, "%" + query + "%").or()
+                        .like(PatientData.FIELD_LAST_NAME, "%" + query + "%").or()
+                        .like(PatientData.FIELD_PATRONYMIC, "%" + query + "%")
+                        .query();
+            } else {
+                patientDataList = patientDataDao.queryBuilder().orderBy(PatientData.FIELD_LAST_NAME, true).query();
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            patientDataList = new ArrayList<>();
+        }
         Iterable<Patient> patients = Iterables.transform(patientDataList, patientTransformer);
         return Lists.newArrayList(patients);
     }
