@@ -57,7 +57,7 @@ class PatientActivity : BaseActivity(), PatientUUIDProvider {
         useCaseHandler.execute<GetPatientUseCase.RequestValues, GetPatientUseCase.ResponseValue>(GetPatientUseCase(), GetPatientUseCase.RequestValues(mPatientUUID), object : UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue> {
             override fun onSuccess(response: GetPatientUseCase.ResponseValue) {
                 val patient = response.patient
-                patient_name_text_view.text = String.format("%s %s %s", patient.lastName, patient.firstName, patient.patronymic)
+                patient_name_text_view.text = String.format("%s %s %s", patient.firstName, patient.lastName, patient.patronymic)
                 patient_birthday_text_view.text = DateTimeUtils.getDateString(patient.birthday)
                 patient_id_text_view.text = patient.patientId
                 patient_diagnosis_text_view.text = patient.diagnosis
@@ -95,7 +95,7 @@ class PatientActivity : BaseActivity(), PatientUUIDProvider {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             CREATE_EXAMINATION_REQUEST_CODE -> {
                 val patientUUID = data?.getLongExtra(CreateOrUpdateExaminationActivity.EXTRA_PATIENT_UUID, 0)!!
                 val examinationUUID = data?.getLongExtra(CreateOrUpdateExaminationActivity.EXTRA_EXAMINATION_UUID, 0)!!

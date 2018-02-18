@@ -3,6 +3,8 @@ package ru.krygin.smart_sight.patients
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_patients.*
 import kotlinx.android.synthetic.main.content_patients.*
@@ -11,6 +13,7 @@ import ru.krygin.smart_sight.core.async.UseCase
 import ru.krygin.smart_sight.core.ui.BaseActivity
 import ru.krygin.smart_sight.patients.model.Patient
 import ru.krygin.smart_sight.patients.use_cases.GetPatientsUseCase
+import ru.krygin.smart_sight.settings.SettingsActivity
 
 class PatientsActivity : BaseActivity() {
 
@@ -58,14 +61,29 @@ class PatientsActivity : BaseActivity() {
                 })
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_patients, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+            when (item.itemId) {
+                R.id.settings_menu_item -> {
+                    val settingsActivityIntent = Intent(this, SettingsActivity::class.java)
+                    startActivity(settingsActivityIntent)
+                    true
+                }
+                else -> super.onOptionsItemSelected(item)
+            }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
+        when (requestCode) {
             CREATE_PATIENT_REQUEST_CODE -> {
                 val createdPatientUUID = data?.getLongExtra(EXTRA_PATIENT_UUID, 0)!!
                 if (createdPatientUUID > 0) {
                     val intent = PatientActivity.newIntent(this, createdPatientUUID)
                     startActivity(intent)
-            }
+                }
             }
         }
     }

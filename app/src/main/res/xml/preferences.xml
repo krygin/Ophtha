@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/doctor_preferences">
+
+        <EditTextPreference
+            android:key="doctor_name_preference"
+            android:summary="@string/summary_doctor_name_preference"
+            android:title="@string/title_doctor_name_preference" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

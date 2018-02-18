@@ -21,6 +21,7 @@ import android.print.PrintDocumentInfo;
 import android.print.pdf.PrintedPdfDocument;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.support.v7.preference.PreferenceManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -122,6 +123,9 @@ public class PrintReportAdapter extends PrintDocumentAdapter {
 
 
     private void drawReport(PdfDocument.Page page) {
+        String doctorName = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getString("doctor_name_preference", "");
+
         Examination examination = mSnapshot.getExamination();
         Patient patient = examination.getPatient();
 
@@ -142,7 +146,7 @@ public class PrintReportAdapter extends PrintDocumentAdapter {
         textPaint.setTextSize(textHeight);
 
         Paint logoPaint = new Paint();
-        logoPaint.setColor(Color.RED);
+        logoPaint.setColor(Color.GRAY);
 
         PdfDocument.PageInfo pageInfo = page.getInfo();
 
@@ -193,16 +197,14 @@ public class PrintReportAdapter extends PrintDocumentAdapter {
         }
 
         currentContentYPosition += spaceBetweenInfoBlocks;
-
-        canvas.drawText(String.format("Комментарий: %s", mSnapshot.getComment()), leftMargin, currentContentYPosition + textHeight, textPaint);
+        String comment = mSnapshot.getComment() != null ? mSnapshot.getComment() : "";
+        canvas.drawText(String.format("Комментарий: %s", comment), leftMargin, currentContentYPosition + textHeight, textPaint);
         currentContentYPosition += textHeight;
 
         currentContentYPosition += spaceBetweenInfoBlocks;
 
 
-
-
-        canvas.drawText("Лечащий врач", leftMargin, pageInfo.getPageHeight() - bottomMargin - textHeight, textPaint);
+        canvas.drawText(String.format("Лечащий врач: %s", doctorName), leftMargin, pageInfo.getPageHeight() - bottomMargin - textHeight, textPaint);
 
 
     }

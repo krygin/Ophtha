@@ -38,6 +38,8 @@
             <!--</intent-filter>-->
         </activity>
 
+        <activity android:name=".settings.SettingsActivity"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="ru.krygin.smart_sight.fileprovider"
