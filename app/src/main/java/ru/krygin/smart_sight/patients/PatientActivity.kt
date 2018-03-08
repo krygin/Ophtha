@@ -58,7 +58,7 @@ class PatientActivity : BaseActivity(), PatientUUIDProvider {
             override fun onSuccess(response: GetPatientUseCase.ResponseValue) {
                 val patient = response.patient
                 patient_name_text_view.text = String.format("%s %s %s", patient.firstName, patient.lastName, patient.patronymic)
-                patient_birthday_text_view.text = DateTimeUtils.getDateString(patient.birthday)
+                patient_birthday_text_view.text = patient.birthday?.let { DateTimeUtils.getDateString(it) }
                 patient_id_text_view.text = patient.patientId
                 patient_diagnosis_text_view.text = patient.diagnosis
             }
@@ -97,10 +97,14 @@ class PatientActivity : BaseActivity(), PatientUUIDProvider {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             CREATE_EXAMINATION_REQUEST_CODE -> {
-                val patientUUID = data?.getLongExtra(CreateOrUpdateExaminationActivity.EXTRA_PATIENT_UUID, 0)!!
-                val examinationUUID = data?.getLongExtra(CreateOrUpdateExaminationActivity.EXTRA_EXAMINATION_UUID, 0)!!
-                val intent = ExaminationActivity.newIntent(this, patientUUID, examinationUUID)
-                startActivity(intent)
+                data?.let {
+                    val patientUUID = it.getLongExtra(CreateOrUpdateExaminationActivity.EXTRA_PATIENT_UUID, 0)
+                    val examinationUUID = it.getLongExtra(CreateOrUpdateExaminationActivity.EXTRA_EXAMINATION_UUID, 0)
+                    if (patientUUID > 0 && examinationUUID > 0) {
+                        val intent = ExaminationActivity.newIntent(this, patientUUID, examinationUUID)
+                        startActivity(intent)
+                    }
+                }
             }
         }
     }

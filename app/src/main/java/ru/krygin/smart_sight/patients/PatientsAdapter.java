@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,8 +42,12 @@ public class PatientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ViewHolder viewHolder = (ViewHolder) holder;
         Patient patient = mPatients.get(position);
         viewHolder.patientNameTextView.setText(String.format("%s %s", patient.getLastName(), patient.getFirstName()));
-        viewHolder.patientBirthdayTextView.setText(DateTimeUtils.getDateString(patient.getBirthday()));
-
+        Date birthday = patient.getBirthday();
+        if (birthday != null) {
+            viewHolder.patientBirthdayTextView.setText(DateTimeUtils.getDateString(patient.getBirthday()));
+        } else {
+            viewHolder.patientBirthdayTextView.setText(null);
+        }
     }
 
     @Override

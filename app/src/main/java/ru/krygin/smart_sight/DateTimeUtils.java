@@ -4,10 +4,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-/**
- * Created by krygin on 06.09.17.
- */
-
 public class DateTimeUtils {
     private DateTimeUtils() {
 

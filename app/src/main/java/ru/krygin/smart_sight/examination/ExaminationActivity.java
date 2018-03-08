@@ -139,8 +139,11 @@ public class ExaminationActivity extends BaseActivity implements
     @Override
     public void showExamination(Examination examination) {
         getSupportActionBar().setTitle(Examination.Type.values()[examination.getType()].toString());
-        getSupportActionBar().setSubtitle(DateTimeUtils.getDateString(examination.getDate()));
-
+        if (examination.getDate() != null) {
+            getSupportActionBar().setSubtitle(DateTimeUtils.getDateString(examination.getDate()));
+        } else {
+            getSupportActionBar().setSubtitle(null);
+        }
         mCommentTextView.setText(examination.getComment());
     }
 

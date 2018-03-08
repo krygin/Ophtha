@@ -1,5 +1,6 @@
 package ru.krygin.smart_sight.patients
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
@@ -107,10 +108,14 @@ class PatientsActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             CREATE_PATIENT_REQUEST_CODE -> {
-                val createdPatientUUID = data?.getLongExtra(EXTRA_PATIENT_UUID, 0)!!
-                if (createdPatientUUID > 0) {
-                    val intent = PatientActivity.newIntent(this, createdPatientUUID)
-                    startActivity(intent)
+                if (resultCode.equals(Activity.RESULT_OK)) {
+                    data?.let {
+                        val createdPatientUUID = it.getLongExtra(EXTRA_PATIENT_UUID, 0)
+                        if (createdPatientUUID > 0) {
+                            val intent = PatientActivity.newIntent(this, createdPatientUUID)
+                            startActivity(intent)
+                        }
+                    }
                 }
             }
         }

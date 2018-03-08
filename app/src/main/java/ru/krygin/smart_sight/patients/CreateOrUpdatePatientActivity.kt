@@ -27,11 +27,6 @@ import ru.krygin.smart_sight.R
 import ru.krygin.smart_sight.core.ui.BaseActivity
 import ru.krygin.smart_sight.patients.model.Patient
 
-
-/**
- * Created by krygin on 10.08.17.
- */
-
 class CreateOrUpdatePatientActivity : BaseActivity(), PatientView {
 
     @InjectPresenter
@@ -88,14 +83,14 @@ class CreateOrUpdatePatientActivity : BaseActivity(), PatientView {
                 finish()
                 return true
             }
-            R.id.action_save -> if (true) {
+            R.id.action_save -> if (checkDataIsValid()) {
                 mPresenter.savePatient(
                         first_name_text_input_layout.editText?.text.toString(),
                         last_name_text_input_layout.editText?.text.toString(),
                         patronymic_name_text_input_layout.editText?.text.toString(),
                         spinner.selectedItem as Patient.Gender,
                         patient_id_text_input_layout.editText?.text.toString(),
-                        (patient_birthday_text_input_layout.editText?.tag as Calendar).time,
+                        (patient_birthday_text_input_layout.editText?.tag as? Calendar)?.time,
                         patient_diagnosis_text_input_layout.editText?.text.toString()
                 )
                 return true
@@ -105,54 +100,34 @@ class CreateOrUpdatePatientActivity : BaseActivity(), PatientView {
         }
     }
 
-//    private fun checkDataIsValid(): Boolean {
-//        var result = true
-//        if (TextUtils.isEmpty(mFirstNameTextInputLayout!!.editText!!.text.toString())) {
-//            mFirstNameTextInputLayout!!.error = getString(R.string.field_required)
-//            result = false
-//        }
-//
-//        if (TextUtils.isEmpty(mLastNameTextInputLayout!!.editText!!.text.toString())) {
-//            mLastNameTextInputLayout!!.error = getString(R.string.field_required)
-//            result = false
-//        }
-//
-//        if (TextUtils.isEmpty(mPatronymicTextInputLayout!!.editText!!.text.toString())) {
-//            mPatronymicTextInputLayout!!.error = getString(R.string.field_required)
-//            result = false
-//        }
-//
-//        if (mGenderSpinner!!.selectedItem == Patient.Gender.UNDEFINDED) {
-//            mGenderSpinner!!.error = getString(R.string.field_required)
-//            result = false
-//        }
-//
-//        if (TextUtils.isEmpty(mPatientIdTextInputLayout!!.editText!!.text.toString())) {
-//            mPatientIdTextInputLayout!!.error = getString(R.string.field_required)
-//            result = false
-//        }
-//
-//        if (mPatientBirthdayTextInputLayout!!.editText!!.tag == null) {
-//            mPatientBirthdayTextInputLayout!!.error = getString(R.string.field_required)
-//            result = false
-//        }
-//
-//        if (TextUtils.isEmpty(mDiagnosisTextInputLayout!!.editText!!.text.toString())) {
-//            mDiagnosisTextInputLayout!!.error = getString(R.string.field_required)
-//            result = false
-//        }
-//
-//        return result
-//    }
+    private fun checkDataIsValid(): Boolean {
+        var result = true
+        if (TextUtils.isEmpty(first_name_text_input_layout!!.editText!!.text.toString())) {
+            first_name_text_input_layout!!.error = getString(R.string.field_required)
+            result = false
+        }
+
+        if (TextUtils.isEmpty(last_name_text_input_layout!!.editText!!.text.toString())) {
+            last_name_text_input_layout!!.error = getString(R.string.field_required)
+            result = false
+        }
+        return result
+    }
 
     override fun showPatient(patient: Patient) {
         first_name_text_input_layout.editText?.setText(patient.firstName)
         last_name_text_input_layout.editText?.setText(patient.lastName)
         patronymic_name_text_input_layout.editText?.setText(patient.patronymic)
         spinner.setSelection(patient.gender.ordinal)
-        val calendar = DateTimeUtils.getCalendar(patient.birthday)
-        patient_birthday_text_input_layout.editText?.setText(DateTimeUtils.getDateString(calendar))
-        patient_birthday_text_input_layout.editText?.tag = calendar
+        if (patient.birthday != null) {
+            val calendar = DateTimeUtils.getCalendar(patient.birthday)
+            patient_birthday_text_input_layout.editText?.setText(DateTimeUtils.getDateString(calendar))
+            patient_birthday_text_input_layout.editText?.tag = calendar
+        } else {
+            patient_birthday_text_input_layout.editText?.setText(null)
+            patient_birthday_text_input_layout.editText?.tag = null
+        }
+
         patient_id_text_input_layout.editText?.setText(patient.patientId)
 
     }

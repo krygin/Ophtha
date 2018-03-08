@@ -77,7 +77,7 @@ class CreateOrUpdateExaminationActivity : BaseActivity(), CreateOrUpdateExaminat
                 if (checkDataIsValid())
                     mPresenter.saveExamination(mPatientUUID,
                             examination_type_spinner.selectedItem as Examination.Type,
-                            (date_text_input_layout.editText?.tag as Calendar).time,
+                            (date_text_input_layout.editText?.tag as? Calendar)?.time,
                             comment_text_input_layout.editText?.text.toString()
                     )
                 return true
@@ -93,10 +93,10 @@ class CreateOrUpdateExaminationActivity : BaseActivity(), CreateOrUpdateExaminat
             result = false
         }
 
-        if (date_text_input_layout.editText!!.tag == null) {
-            date_text_input_layout.error = getString(R.string.field_required)
-            result = false
-        }
+//        if (date_text_input_layout.editText!!.tag == null) {
+//            date_text_input_layout.error = getString(R.string.field_required)
+//            result = false
+//        }
         return result
     }
 
@@ -107,9 +107,14 @@ class CreateOrUpdateExaminationActivity : BaseActivity(), CreateOrUpdateExaminat
 
     override fun showExamination(examination: Examination) {
         examination_type_spinner.setSelection(examination.type)
-        val calendar = DateTimeUtils.getCalendar(examination.date)
-        date_text_input_layout.editText?.setText(DateTimeUtils.getDateString(calendar))
-        date_text_input_layout.editText?.tag = calendar
+        if (examination.date != null) {
+            val calendar = DateTimeUtils.getCalendar(examination.date)
+            date_text_input_layout.editText?.setText(DateTimeUtils.getDateString(calendar))
+            date_text_input_layout.editText?.tag = calendar
+        } else {
+            date_text_input_layout.editText?.setText(null)
+            date_text_input_layout.editText?.tag = null
+        }
         comment_text_input_layout.editText?.setText(examination.comment)
     }
 
