@@ -1,5 +1,7 @@
 package ru.krygin.smart_sight;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -23,6 +25,7 @@ import ru.krygin.smart_sight.patients.use_cases.SavePatientUseCase;
 import ru.krygin.smart_sight.snapshot.ViewSnapshotActivity;
 import ru.krygin.smart_sight.snapshot.use_cases.RemoveSnapshotUseCase;
 import ru.krygin.smart_sight.snapshot.use_cases.SaveSnapshotUseCase;
+import ru.krygin.smart_sight.snapshot.use_cases.UpdateSnapshotUseCase;
 
 /**
  * Created by krygin on 02.08.17.
@@ -74,4 +77,6 @@ public interface SmartSightAppComponent {
     void inject(GetExtendedOculusSnapshotUseCase getExtendedOculusSnapshotUseCase);
 
     void inject(PrintReportAdapter printReportAdapter);
+
+    void inject(@NotNull UpdateSnapshotUseCase updateSnapshotUseCase);
 }

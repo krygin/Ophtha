@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -80,7 +81,17 @@ public class ExaminationSection extends StatelessSection {
                 }
             }
         });
+        itemViewHolder.removeSnapshotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnSnapshotClickListener != null) {
+                    mOnSnapshotClickListener.onRemoveSnapshot(snapshot);
+                }
+            }
+        });
     }
+
+
 
     @Override
     public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
@@ -118,6 +129,9 @@ public class ExaminationSection extends StatelessSection {
         @BindView(R.id.oculus_comment_indicator_view)
         View indicatorView;
 
+        @BindView(R.id.oculus_remove_snapshot_button)
+        ImageButton removeSnapshotButton;
+
         public ItemViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -140,6 +154,8 @@ public class ExaminationSection extends StatelessSection {
 
     public interface OnShapshotClickListener {
         void onSnapshotClick(Snapshot snapshot);
+        void onRemoveSnapshot(Snapshot snapshot);
+
     }
 
     public interface OnExaminationClickListener {

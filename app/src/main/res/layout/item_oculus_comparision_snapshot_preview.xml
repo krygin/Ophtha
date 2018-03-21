@@ -13,15 +13,6 @@
         fresco:placeholderImage="@mipmap/ic_launcher"
         fresco:viewAspectRatio="1"/>
 
-    <ImageButton
-        android:id="@+id/oculus_remove_snapshot_button"
-        android:src="@drawable/ic_remove_circle_outline_black_24dp"
-        android:layout_margin="8dp"
-        android:layout_gravity="top|right"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@android:color/transparent"/>
-
     <View
         android:id="@+id/oculus_comment_indicator_view"
         android:layout_margin="8dp"

@@ -34,10 +34,8 @@ import ru.krygin.smart_sight.snapshot.use_cases.GetOculusSnapshotUseCase;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
 import ru.krygin.smart_sight.snapshot.use_cases.GetExtendedOculusSnapshotUseCase;
 import ru.krygin.smart_sight.snapshot.use_cases.RemoveSnapshotUseCase;
-
-/**
- * Created by krygin on 06.08.17.
- */
+import ru.krygin.smart_sight.snapshot.use_cases.SaveSnapshotUseCase;
+import ru.krygin.smart_sight.snapshot.use_cases.UpdateSnapshotUseCase;
 
 public class ViewSnapshotActivity extends BaseActivity {
 
@@ -68,6 +66,18 @@ public class ViewSnapshotActivity extends BaseActivity {
             mEditOculusSnapshotCommentButton.setImageResource(R.drawable.ic_edit_black_24dp);
             mOculusCommentTextView.setEnabled(false);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            mSnapshot.setComment(mOculusCommentTextView.getText().toString());
+            getUseCaseHandler().execute(new UpdateSnapshotUseCase(), new UpdateSnapshotUseCase.RequestValues(mSnapshot), new UseCase.UseCaseCallback<UpdateSnapshotUseCase.ResponseValue>() {
+                @Override
+                public void onSuccess(UpdateSnapshotUseCase.ResponseValue response) {
+
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
         } else {
             mEditOculusSnapshotCommentButton.setImageResource(R.drawable.ic_check_white_24dp);
             mOculusCommentTextView.setEnabled(true);
@@ -164,30 +174,6 @@ public class ViewSnapshotActivity extends BaseActivity {
                     } else {
                         PrintManager printManager = (PrintManager) getSystemService(PRINT_SERVICE);
                         printManager.print(getString(R.string.app_name), new PrintReportAdapter(this, mSnapshot), null);
-
-//                        PdfDocument pdfDocument = new PrintedPdfDocument(this, new PrintAttributes.Builder()
-//                                .setResolution(new PrintAttributes.Resolution("res", "Resolusion", 300, 300))
-//                                .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
-//                                .setMinMargins(new PrintAttributes.Margins(10, 10, 10, 10)).build());
-//
-//                        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
-//
-//                        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
-//
-//                        drawReport(page);
-//
-//                        pdfDocument.finishPage(page);
-//
-//                        File file = new File(getExternalFilesDir("OculusReports"), "qqq.pdf");
-//                        try {
-//                            if (!file.exists()) {
-//                                file.createNewFile();
-//                            }
-//                            pdfDocument.writeTo(new FileOutputStream(file));
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                        pdfDocument.close();
                     }
                 }
                 return true;

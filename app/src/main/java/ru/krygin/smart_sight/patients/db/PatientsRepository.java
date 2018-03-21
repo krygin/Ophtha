@@ -222,6 +222,7 @@ public class PatientsRepository {
             snapshotData.setTimestamp(input.getTimestamp());
             snapshotData.setComment(input.getComment());
             snapshotData.setOculus(input.getOculus().toBoolean());
+            snapshotData.setExaminationData(examinationTransformerReverse.apply(input.getExamination()));
             return snapshotData;
         }
     };

@@ -1,8 +1,10 @@
 package ru.krygin.smart_sight.comparation;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import ru.krygin.smart_sight.examination.model.Examination;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
 import ru.krygin.smart_sight.oculus.Oculus;
 import ru.krygin.smart_sight.patients.use_cases.GetPatientUseCase;
+import ru.krygin.smart_sight.snapshot.use_cases.RemoveSnapshotUseCase;
 
 /**
  * Created by krygin on 06.08.17.
@@ -96,6 +99,10 @@ public abstract class OculusExaminationsListFragment extends TitledFragment {
     @Override
     public void onResume() {
         super.onResume();
+        loadPatient();
+    }
+
+    private void loadPatient(){
         getUseCaseHandler().execute(new GetPatientUseCase(), new GetPatientUseCase.RequestValues(mPatientUUIDProvider.getPatientUUID()), new UseCase.UseCaseCallback<GetPatientUseCase.ResponseValue>() {
             @Override
             public void onSuccess(GetPatientUseCase.ResponseValue response) {

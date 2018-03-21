@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.common.collect.Iterables;
@@ -23,10 +24,6 @@ import ru.krygin.smart_sight.R;
 import ru.krygin.smart_sight.core.Injector;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
 import ru.krygin.smart_sight.oculus.Oculus;
-
-/**
- * Created by krygin on 14.08.17.
- */
 
 public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshotsAdapter.ViewHolder> {
 
@@ -62,6 +59,12 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
                 mOnSnapshotClickListener.onSnapshotClick(snapshot);
             }
         });
+        holder.removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnSnapshotClickListener.onRemoveSnapshot(snapshot);
+            }
+        });
 
     }
 
@@ -85,6 +88,9 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
         @BindView(R.id.oculus_comment_indicator_view)
         View indicatorView;
 
+        @BindView(R.id.oculus_remove_snapshot_button)
+        ImageButton removeButton;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -93,6 +99,7 @@ public class OculusSnapshotsAdapter extends RecyclerView.Adapter<OculusSnapshots
 
     public interface OnShapshotClickListener {
         void onSnapshotClick(Snapshot snapshot);
+        void onRemoveSnapshot(Snapshot snapshot);
     }
 
     private List<Snapshot> getFilteredByOculusSnapshots(List<Snapshot> snapshots) {

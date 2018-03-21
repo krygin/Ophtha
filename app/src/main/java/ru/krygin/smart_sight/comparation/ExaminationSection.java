@@ -1,8 +1,10 @@
 package ru.krygin.smart_sight.comparation;
 
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -25,10 +27,6 @@ import ru.krygin.smart_sight.examination.model.Examination;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
 import ru.krygin.smart_sight.oculus.Oculus;
 
-/**
- * Created by krygin on 06.08.17.
- */
-
 public class ExaminationSection extends StatelessSection {
 
     @Inject
@@ -40,7 +38,7 @@ public class ExaminationSection extends StatelessSection {
     private OnExaminationClickListener mOnSectionClickListener;
 
     public ExaminationSection(Examination examination, Oculus oculus) {
-        super(new SectionParameters.Builder(R.layout.item_oculus_examination_snapshot_preview)
+        super(new SectionParameters.Builder(R.layout.item_oculus_comparision_snapshot_preview)
                 .headerResourceId(R.layout.item_oculus_examination_info_header).build());
         Injector.getAppComponent().inject(this);
         mExamination = examination;

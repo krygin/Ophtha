@@ -1,8 +1,5 @@
 package ru.krygin.smart_sight.core.async;
 
-/**
- * Created by krygin on 02.08.17.
- */
 
 public abstract class UseCase<Q extends UseCase.RequestValues, P extends UseCase.ResponseValue> {
 

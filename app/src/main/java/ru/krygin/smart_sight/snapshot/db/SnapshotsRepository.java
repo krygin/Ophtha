@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
+import org.jetbrains.annotations.NotNull;
+
 import ru.krygin.smart_sight.DatabaseHelper;
 import ru.krygin.smart_sight.examination.db.ExaminationData;
 import ru.krygin.smart_sight.snapshot.model.Snapshot;
@@ -47,5 +49,11 @@ public class SnapshotsRepository {
     public void removeSnapshot(Snapshot snapshot) {
         SnapshotData snapshotData = snapshotTransformerReverse.apply(snapshot);
         mDatabaseHelper.getRuntimeExceptionDao(SnapshotData.class).delete(snapshotData);
+    }
+
+    public void updateSnapshot(@NotNull Snapshot snapshot) {
+        SnapshotData snapshotData = snapshotTransformerReverse.apply(snapshot);
+        int updated = mDatabaseHelper.getRuntimeExceptionDao(SnapshotData.class).update(snapshotData);
+        new Integer(updated).toString();
     }
 }
